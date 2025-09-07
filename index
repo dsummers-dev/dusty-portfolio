@@ -113,6 +113,9 @@
       line-height: 1.2;
       font-weight: 500;
     }
+    .caption em {
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -138,51 +141,69 @@
     </header>
 
     <section class="grid" id="grid">
-      <!-- Image thumbnails -->
+      <!-- Grid is populated from projects.json -->
       <script>
-        const grid = document.getElementById('grid');
-        const itemsCount = 30;
+        (async function () {
+          const grid = document.getElementById('grid');
 
-        const frag = document.createDocumentFragment();
-        for (let i = 0; i < itemsCount; i++) {
-          const item = document.createElement('div');
-          item.className = 'grid-item';
-
-          const img = document.createElement('img');
-          const src = `images/project${i+1}.jpg`;
-          img.src = src;
-          img.alt = `Project ${i+1}`;
-          img.addEventListener('click', () => openOverlay(src));
-          item.appendChild(img);
-
-          const cap = document.createElement('div');
-          cap.className = 'caption';
-          cap.innerHTML = 'Band Name<br>Cool Album Title<br>2007';
-          item.appendChild(cap);
-
-          frag.appendChild(item);
-        }
-        grid.appendChild(frag);
-
-        function openOverlay(src) {
-          const overlay = document.getElementById('overlay');
-          const overlayContent = document.getElementById('overlayContent');
-          if (src.endsWith && src.endsWith('.mp4')) {
-            overlayContent.innerHTML = `<video src="${src}" controls autoplay></video>`;
-          } else {
-            overlayContent.innerHTML = `<img src="${src}" alt="Gallery">`;
+          function openOverlay(src) {
+            const overlay = document.getElementById('overlay');
+            const overlayContent = document.getElementById('overlayContent');
+            if (src && src.endsWith && src.endsWith('.mp4')) {
+              overlayContent.innerHTML = '<video src="' + src + '" controls autoplay></video>';
+            } else if (src) {
+              overlayContent.innerHTML = '<img src="' + src + '" alt="Gallery">';
+            }
+            overlay.classList.add('active');
           }
-          overlay.classList.add('active');
-        }
 
-        function closeOverlay() {
-          document.getElementById('overlay').classList.remove('active');
-          document.getElementById('overlayContent').innerHTML = '';
-        }
+          function closeOverlay() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('overlayContent').innerHTML = '';
+          }
+          window.openOverlay = openOverlay;
+          window.closeOverlay = closeOverlay;
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeOverlay();
+          });
 
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') closeOverlay();
-        });
+          try {
+            const res = await fetch('projects.json', { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const projects = await res.json();
+
+            const frag = document.createDocumentFragment();
+            projects.forEach(function (project) {
+              const image = project.image;
+              const caption = project.caption || '';
+
+              const item = document.createElement('div');
+              item.className = 'grid-item';
+
+              const img = document.createElement('img');
+              img.src = image;
+              // Make a plain-text alt from the caption HTML
+              const tmp = document.createElement('div');
+              tmp.innerHTML = caption;
+              const plain = (tmp.textContent || '').trim();
+              img.alt = plain || 'Project image';
+              img.addEventListener('click', function () { openOverlay(image); });
+              item.appendChild(img);
+
+              const cap = document.createElement('div');
+              cap.className = 'caption';
+              cap.innerHTML = caption;
+              item.appendChild(cap);
+
+              frag.appendChild(item);
+            });
+
+            grid.appendChild(frag);
+          } catch (err) {
+            grid.innerHTML = '<div class="caption">Could not load projects.json</div>';
+            console.error('projects.json load error:', err);
+          }
+        })();
       </script>
     </section>
   </div>
@@ -191,5 +212,54 @@
     <span class="close-btn" onclick="closeOverlay()">&times;</span>
     <div class="overlay-content" id="overlayContent"></div>
   </div>
+
+  <script>
+    fetch('projects.json')
+      .then(response => response.json())
+      .then(projects => {
+        const grid = document.getElementById('grid');
+        const frag = document.createDocumentFragment();
+
+        projects.forEach((project) => {
+          const item = document.createElement('div');
+          item.className = 'grid-item';
+
+          const img = document.createElement('img');
+          img.src = project.image;
+          img.alt = project.caption.replace(/<br>/g, ' ');
+          img.addEventListener('click', () => openOverlay(project.image));
+          item.appendChild(img);
+
+          const cap = document.createElement('div');
+          cap.className = 'caption';
+          cap.innerHTML = project.caption;
+          item.appendChild(cap);
+
+          frag.appendChild(item);
+        });
+
+        grid.appendChild(frag);
+      });
+
+    function openOverlay(src) {
+      const overlay = document.getElementById('overlay');
+      const overlayContent = document.getElementById('overlayContent');
+      if (src.endsWith && src.endsWith('.mp4')) {
+        overlayContent.innerHTML = `<video src="${src}" controls autoplay></video>`;
+      } else {
+        overlayContent.innerHTML = `<img src="${src}" alt="Gallery">`;
+      }
+      overlay.classList.add('active');
+    }
+
+    function closeOverlay() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('overlayContent').innerHTML = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeOverlay();
+    });
+  </script>
 </body>
 </html>
