@@ -1,0 +1,22 @@
+[
+  {
+    "image": "images/project1.jpg",
+    "caption": "Band 1<br><em>Album 1,</em><br>2001"
+  },
+  {
+    "image": "images/project2.jpg",
+    "caption": "Band 2<br>Album 2<br>2002"
+  },
+  {
+    "image": "images/project3.jpg",
+    "caption": "Band 3<br>Album 3<br>2003"
+  },
+  {
+    "image": "images/project4.jpg",
+    "caption": "Band 4<br>Album 4<br>2004"
+  },
+  {
+    "image": "images/project5.jpg",
+    "caption": "Band 5<br>Album 5<br>2005"
+  }
+]
