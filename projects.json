@@ -1,22 +1,12 @@
 [
-  {
-    "image": "images/project1.jpg",
-    "caption": "Band 1<br><em>Album 1,</em><br>2001"
-  },
-  {
-    "image": "images/project2.jpg",
-    "caption": "Band 2<br>Album 2<br>2002"
-  },
-  {
-    "image": "images/project3.jpg",
-    "caption": "Band 3<br>Album 3<br>2003"
-  },
-  {
-    "image": "images/project4.jpg",
-    "caption": "Band 4<br>Album 4<br>2004"
-  },
-  {
-    "image": "images/project5.jpg",
-    "caption": "Band 5<br>Album 5<br>2005"
-  }
+  { "image": "images/project1.jpg",  "caption": "Band 1<br><em>Album 1</em><br>2001" },
+  { "image": "images/project2.jpg",  "caption": "Band 2<br><em>Album 2</em><br>2002" },
+  { "image": "images/project3.jpg",  "caption": "Band 3<br><em>Album 3</em><br>2003" },
+  { "image": "images/project4.jpg",  "caption": "Band 4<br><em>Album 4</em><br>2004" },
+  { "image": "images/project5.jpg",  "caption": "Band 5<br><em>Album 5</em><br>2005" },
+  { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
+  { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
+  { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
+  { "image": "images/project9.jpg",  "caption": "Band 9<br><em>Album 9</em><br>2009" },
+  { "image": "images/project10.jpg", "caption": "Band 10<br><em>Album 10</em><br>2010" }
 ]
