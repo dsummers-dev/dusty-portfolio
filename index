@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dusty Summers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Work Sans', sans-serif;
+      background: white;
+      color: #333;
+      font-size: 10pt;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+    .container {
+      padding: 16pt;
+      max-width: 1600px;
+      margin: auto;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: transparent;
+      padding-top: 0;
+      padding-bottom: 8px;
+      margin-bottom: 26px;
+      z-index: 100;
+      line-height: 1.05;
+    }
+    header h1,
+    header p {
+      font-size: 10pt;
+      font-weight: 500;
+      line-height: 1.05;
+      margin: 0;
+    }
+    .social {
+      margin-top: 4px;
+      display: flex;
+      gap: 6px;
+      line-height: 1;
+    }
+    .social a {
+      text-decoration: none;
+      color: #333;
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+    }
+    .social a svg {
+      width: 100%;
+      height: 100%;
+    }
+    .social a:hover {
+      color: #000;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 24px 8px;
+    }
+    .grid-item { cursor: pointer; }
+
+    /* IMAGE TILE */
+    .grid-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: block;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,0.08);
+      filter: grayscale(100%);
+      transition: filter 200ms ease;
+    }
+
+    .grid-item:hover img,
+    .grid-item:focus-within img {
+      filter: grayscale(0%);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grid-item img { transition: none; }
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .overlay.active { display: flex; }
+    .overlay-content { max-width: 90%; max-height: 90%; }
+    .overlay img, .overlay video {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+    .close-btn {
+      position: absolute; top: 30px; right: 30px;
+      color: white; font-size: 28px; cursor: pointer;
+    }
+    .caption {
+      color: #777;
+      font-family: 'Space Mono', monospace;
+      font-size: 6pt;
+      margin-top: 4px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Dusty Summers</h1>
+      <p>Creative director at Sub Pop Records.<br>Somtimes freelance.</p>
+      <div class="social">
+        <a href="https://instagram.com/dustysummers" target="_blank" rel="noopener noreferrer me" aria-label="Instagram" title="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
+          </svg>
+        </a>
+        <a href="mailto:dsummers@gmail.com" aria-label="Email" title="Email">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M22 6 12 13 2 6" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <section class="grid" id="grid">
+      <!-- Image thumbnails -->
+      <script>
+        const grid = document.getElementById('grid');
+        const itemsCount = 30;
+
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < itemsCount; i++) {
+          const item = document.createElement('div');
+          item.className = 'grid-item';
+
+          const img = document.createElement('img');
+          const src = `images/project${i+1}.jpg`;
+          img.src = src;
+          img.alt = `Project ${i+1}`;
+          img.addEventListener('click', () => openOverlay(src));
+          item.appendChild(img);
+
+          const cap = document.createElement('div');
+          cap.className = 'caption';
+          cap.innerHTML = 'Band Name<br>Cool Album Title<br>2007';
+          item.appendChild(cap);
+
+          frag.appendChild(item);
+        }
+        grid.appendChild(frag);
+
+        function openOverlay(src) {
+          const overlay = document.getElementById('overlay');
+          const overlayContent = document.getElementById('overlayContent');
+          if (src.endsWith && src.endsWith('.mp4')) {
+            overlayContent.innerHTML = `<video src="${src}" controls autoplay></video>`;
+          } else {
+            overlayContent.innerHTML = `<img src="${src}" alt="Gallery">`;
+          }
+          overlay.classList.add('active');
+        }
+
+        function closeOverlay() {
+          document.getElementById('overlay').classList.remove('active');
+          document.getElementById('overlayContent').innerHTML = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') closeOverlay();
+        });
+      </script>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <span class="close-btn" onclick="closeOverlay()">&times;</span>
+    <div class="overlay-content" id="overlayContent"></div>
+  </div>
+</body>
+</html>
