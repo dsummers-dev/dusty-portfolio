@@ -28,7 +28,7 @@
     /* Overlay */
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; }
     .overlay.active { display: flex; }
-    .overlay-inner { position: relative; max-width: 1400px; max-height: 85vh; }
+    .overlay-inner { position: relative; max-width: 1400px; max-height: 85vh; padding-top: 2px; }
     .overlay-content { max-width: 100%; max-height: 100%; }
     .overlay img, .overlay video { max-width: 100%; max-height: 100%; display: block; }
 
@@ -36,24 +36,36 @@
     .close-btn:hover { color: #fff; }
 
     /* Nav arrows */
-    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ccc; font-size: 28px; font-weight: 300; cursor: pointer; padding: 4px 8px; line-height: 1; }
+    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ccc; font-size: 32px; font-weight: 300; cursor: pointer; padding: 4px 10px; line-height: 1; z-index: 2; }
+    .nav-btn:hover { color: #fff; }
+    .nav-prev { left: -48px; }
+    .nav-next { right: -48px; }
+    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
+    .nav-btn:hover { color: #fff; }
+    .nav-prev { left: -48px; }
+    .nav-next { right: -48px; }
+    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
     .nav-btn:hover { color: #fff; }
     .nav-prev { left: -36px; }
     .nav-next { right: -36px; }
     @media (max-width: 640px) { .nav-prev { left: -28px; } .nav-next { right: -28px; } }
 
     /* Peek previews */
-    .peek { position: absolute; top: 50%; transform: translateY(-50%); width: 10%; max-height: 70vh; opacity: 0.45; pointer-events: none; }
+    .peek { position: absolute; top: 50%; transform: translateY(-50%); width: 16%; max-height: 70vh; opacity: 0.45; pointer-events: none; z-index: 1; }
     .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
-    .peek-left { left: -12%; }
-    .peek-right { right: -12%; }
+    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
+    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
+    .peek-left { left: -20%; }
+    .peek-right { right: -20%; }
 
     /* Overlay caption */
-    .overlay-caption { margin-top: 8px; color: #ddd; font-size: 9pt; line-height: 1.2; font-family: 'Space Mono', monospace; text-align: left; }
-    .overlay-caption .more { font-size: 8pt; color: #aaa; text-decoration: underline; cursor: pointer; margin-left: 6px; }
-    .overlay-details { display: none; margin-top: 4px; color: #bbb; font-size: 8pt; line-height: 1.3; }
+    .overlay-caption { position: absolute; top: 0; right: 0; color: #ddd; font-size: 9pt; line-height: 1.2; font-family: 'Space Mono', monospace; text-align: left; max-width: 38%; padding-left: 12px; }
+    .overlay-caption .more { display: none; }
+    .overlay-details { display: block; margin-top: 4px; color: #bbb; font-size: 8pt; line-height: 1.3; }
 
     /* Card captions under tiles */
+    
+    
     .caption { color: #777; font-family: 'Space Mono', monospace; font-size: 7pt; margin-top: 4px; line-height: 1.1; font-weight: 500; }
     .caption em { font-style: italic; }
   </style>
@@ -129,121 +141,7 @@
           function updateOverlayCaption(project) {
             const capEl = document.getElementById('overlayCaption');
             const detailsEl = document.getElementById('overlayDetails');
-            const moreEl = document.getElementById('overlayMore');
-            if (!capEl) return;
-            capEl.innerHTML = project.caption || '';
-            if (project.details) {
-              detailsEl.innerHTML = project.details;
-              detailsEl.style.display = 'none';
-              moreEl.style.display = 'inline';
-            } else {
-              detailsEl.innerHTML = '';
-              detailsEl.style.display = 'none';
-              moreEl.style.display = 'none';
-            }
-          }
-
-          function openOverlayFor(projectIdx, mediaIdx) {
-            const overlay = document.getElementById('overlay');
-            currentProject = projectIdx;
-            currentIndex = mediaIdx || 0;
-            const project = PROJECTS[projectIdx];
-            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
-            renderMedia(gallery[currentIndex]);
-            updateOverlayCaption(project);
-            updatePeeks(project);
-
-            const prevBtn = document.querySelector('.nav-prev');
-            const nextBtn = document.querySelector('.nav-next');
-            if (gallery.length > 1) { prevBtn.style.display = 'block'; nextBtn.style.display = 'block'; }
-            else { prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
-            overlay.classList.add('active');
-          }
-
-          function move(delta) {
-            if (currentProject < 0) return;
-            const project = PROJECTS[currentProject];
-            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
-            if (!gallery.length) return;
-            currentIndex = (currentIndex + delta + gallery.length) % gallery.length;
-            renderMedia(gallery[currentIndex]);
-            updatePeeks(project);
-          }
-
-          function closeOverlay() {
-            const overlay = document.getElementById('overlay');
-            overlay.classList.remove('active');
-            document.getElementById('overlayContent').innerHTML = '';
-            currentProject = -1;
-            currentIndex = -1;
-          }
-          window.closeOverlay = closeOverlay;
-
-          document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeOverlay();
-          });
-
-          function clearGrid() { while (grid.firstChild) grid.removeChild(grid.firstChild); }
-          function toArrayMaybe(val) { return Array.isArray(val) ? val : (val ? [val] : []); }
-
-          function renderItems(items) {
-            clearGrid();
-            PROJECTS = items.map(it => (typeof it === 'string') ? { image: it } : it);
-            const frag = document.createDocumentFragment();
-            PROJECTS.forEach(function (project, idx) {
-              const gallery = project.gallery && project.gallery.length ? project.gallery : toArrayMaybe(project.image || project.src);
-              const cover = gallery[0];
-              const caption = project.caption || '';
-
-              const item = document.createElement('div');
-              item.className = 'grid-item';
-
-              const img = document.createElement('img');
-              const coverSrc = (typeof cover === 'string') ? cover : (cover.src || cover.url || cover.image || '');
-              img.src = coverSrc;
-              if (caption) { const tmp = document.createElement('div'); tmp.innerHTML = caption; img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1)); }
-              else { img.alt = 'Project ' + (idx + 1); }
-              img.addEventListener('click', function () { openOverlayFor(idx, 0); });
-              item.appendChild(img);
-
-              const cap = document.createElement('div');
-              cap.className = 'caption';
-              cap.innerHTML = caption;
-              item.appendChild(cap);
-
-              frag.appendChild(item);
-            });
-            grid.appendChild(frag);
-          }
-
-          function renderFallback(count) { const items = Array.from({ length: count }, (_, i) => 'images/project' + (i + 1) + '.jpg'); renderItems(items); }
-
-          try {
-            const res = await fetch('projects.json', { cache: 'no-store' });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const projects = await res.json();
-            renderItems(projects);
-          } catch (err) {
-            console.warn('projects.json load error, using fallback images:', err);
-            renderFallback(10);
-          }
-
-          // UI wiring
-          const closeBtn = document.querySelector('.close-btn');
-          if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
-          const overlayEl = document.getElementById('overlay');
-          if (overlayEl) overlayEl.addEventListener('click', function (e) { if (e.target === overlayEl) closeOverlay(); });
-          const prevBtn = document.querySelector('.nav-prev');
-          const nextBtn = document.querySelector('.nav-next');
-          if (prevBtn && nextBtn) {
-            prevBtn.addEventListener('click', function (e) { e.stopPropagation(); move(-1); });
-            nextBtn.addEventListener('click', function (e) { e.stopPropagation(); move(1); });
-          }
-          const moreEl = document.getElementById('overlayMore');
-          const detailsEl = document.getElementById('overlayDetails');
-          if (moreEl) {
-            moreEl.addEventListener('click', function (e) { e.stopPropagation(); if (!detailsEl) return; const isOpen = detailsEl.style.display === 'block'; detailsEl.style.display = isOpen ? 'none' : 'block'; moreEl.textContent = isOpen ? 'More' : 'Less'; });
-          }
+            // details always visible; removed toggle handler
         })();
       </script>
     </section>
