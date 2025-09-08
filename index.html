@@ -46,12 +46,17 @@
     .nav-next { right: -48px; }
     @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
     .nav-btn:hover { color: #fff; }
+    .nav-prev { left: -48px; }
+    .nav-next { right: -48px; }
+    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
+    .nav-btn:hover { color: #fff; }
     .nav-prev { left: -36px; }
     .nav-next { right: -36px; }
     @media (max-width: 640px) { .nav-prev { left: -28px; } .nav-next { right: -28px; } }
 
     /* Peek previews */
     .peek { position: absolute; top: 50%; transform: translateY(-50%); width: 16%; max-height: 70vh; opacity: 0.45; pointer-events: none; z-index: 1; }
+    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
     .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
     .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
     .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
@@ -65,7 +70,8 @@
 
     /* Card captions under tiles */
     
-    
+
+
     .caption { color: #777; font-family: 'Space Mono', monospace; font-size: 7pt; margin-top: 4px; line-height: 1.1; font-weight: 500; }
     .caption em { font-style: italic; }
   </style>
@@ -94,15 +100,17 @@
 
     <section class="grid" id="grid">
       <script>
-        (async function () {
+        (async function() {
           const grid = document.getElementById('grid');
-          if (window.__GRID_RENDERED) return; 
+          if (window.__GRID_RENDERED) return;
           window.__GRID_RENDERED = true;
 
+          // ---- state ----
           let PROJECTS = [];
           let currentProject = -1;
           let currentIndex = -1;
 
+          // ---- helpers ----
           function getMediaSrc(media) {
             if (!media) return '';
             if (typeof media === 'string') return media;
@@ -114,14 +122,31 @@
             return type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
           }
 
+          // ---- overlay rendering ----
           function renderMedia(media) {
             const overlayContent = document.getElementById('overlayContent');
             if (!overlayContent) return;
             const src = getMediaSrc(media);
             if (!src) { overlayContent.innerHTML = ''; return; }
-            overlayContent.innerHTML = isVideo(media)
-              ? '<video src="' + src + '" controls autoplay></video>'
-              : '<img src="' + src + '" alt="Gallery">';
+            if (isVideo(media)) {
+              overlayContent.innerHTML = '<video src="' + src + '" controls autoplay></video>';
+            } else {
+              overlayContent.innerHTML = '<img src="' + src + '" alt="Gallery">';
+            }
+          }
+
+          function updateOverlayCaption(project) {
+            const capEl = document.getElementById('overlayCaption');
+            const detailsEl = document.getElementById('overlayDetails');
+            if (!capEl) return;
+            capEl.innerHTML = project.caption || '';
+            if (project.details) {
+              detailsEl.innerHTML = project.details;
+              detailsEl.style.display = 'block';
+            } else {
+              detailsEl.innerHTML = '';
+              detailsEl.style.display = 'none';
+            }
           }
 
           function updatePeeks(project) {
@@ -138,10 +163,111 @@
             right.innerHTML = isVideo(nextMedia) ? '' : '<img src="' + getMediaSrc(nextMedia) + '" alt="Next">';
           }
 
-          function updateOverlayCaption(project) {
-            const capEl = document.getElementById('overlayCaption');
-            const detailsEl = document.getElementById('overlayDetails');
-            // details always visible; removed toggle handler
+          function openOverlayFor(projectIdx, mediaIdx) {
+            const overlay = document.getElementById('overlay');
+            currentProject = projectIdx;
+            currentIndex = mediaIdx || 0;
+            const project = PROJECTS[projectIdx];
+            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
+            renderMedia(gallery[currentIndex]);
+            updateOverlayCaption(project);
+            updatePeeks(project);
+
+            const prevBtn = document.querySelector('.nav-prev');
+            const nextBtn = document.querySelector('.nav-next');
+            if (gallery.length > 1) { prevBtn.style.display = 'block'; nextBtn.style.display = 'block'; }
+            else { prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
+            overlay.classList.add('active');
+          }
+
+          function move(delta) {
+            if (currentProject < 0) return;
+            const project = PROJECTS[currentProject];
+            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
+            if (!gallery.length) return;
+            currentIndex = (currentIndex + delta + gallery.length) % gallery.length;
+            renderMedia(gallery[currentIndex]);
+            updatePeeks(project);
+          }
+
+          function closeOverlay() {
+            const overlay = document.getElementById('overlay');
+            overlay.classList.remove('active');
+            const overlayContent = document.getElementById('overlayContent');
+            if (overlayContent) overlayContent.innerHTML = '';
+            currentProject = -1;
+            currentIndex = -1;
+          }
+          window.closeOverlay = closeOverlay;
+
+          document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeOverlay();
+          });
+
+          // ---- grid rendering ----
+          function clearGrid() {
+            while (grid.firstChild) grid.removeChild(grid.firstChild);
+          }
+          function toArrayMaybe(val) { return Array.isArray(val) ? val : (val ? [val] : []); }
+
+          function renderItems(items) {
+            clearGrid();
+            PROJECTS = items.map(function(it){ return (typeof it === 'string') ? { image: it } : it; });
+            const frag = document.createDocumentFragment();
+            PROJECTS.forEach(function(project, idx) {
+              const gallery = project.gallery && project.gallery.length ? project.gallery : toArrayMaybe(project.image || project.src);
+              const cover = gallery[0];
+              const caption = project.caption || '';
+
+              const item = document.createElement('div');
+              item.className = 'grid-item';
+
+              const img = document.createElement('img');
+              const coverSrc = (typeof cover === 'string') ? cover : (cover && (cover.src || cover.url || cover.image)) || '';
+              img.src = coverSrc;
+              if (caption) { const tmp = document.createElement('div'); tmp.innerHTML = caption; img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1)); }
+              else { img.alt = 'Project ' + (idx + 1); }
+              img.addEventListener('click', function(){ openOverlayFor(idx, 0); });
+              item.appendChild(img);
+
+              const cap = document.createElement('div');
+              cap.className = 'caption';
+              cap.innerHTML = caption;
+              item.appendChild(cap);
+
+              frag.appendChild(item);
+            });
+            grid.appendChild(frag);
+          }
+
+          function renderFallback(count) {
+            const items = Array.from({ length: count }, function(_, i){ return 'images/project' + (i + 1) + '.jpg'; });
+            renderItems(items);
+          }
+
+          try {
+            const res = await fetch('projects.json', { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const projects = await res.json();
+            renderItems(projects);
+          } catch (err) {
+            console.warn('projects.json load error, using fallback images:', err);
+            renderFallback(10);
+          }
+
+          // ---- UI wiring ----
+          const closeBtn = document.querySelector('.close-btn');
+          if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+
+          const overlayEl = document.getElementById('overlay');
+          if (overlayEl) overlayEl.addEventListener('click', function(e){ if (e.target === overlayEl) closeOverlay(); });
+
+          const prevBtn = document.querySelector('.nav-prev');
+          const nextBtn = document.querySelector('.nav-next');
+          if (prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', function(e){ e.stopPropagation(); move(-1); });
+            nextBtn.addEventListener('click', function(e){ e.stopPropagation(); move(1); });
+          }
         })();
       </script>
     </section>
