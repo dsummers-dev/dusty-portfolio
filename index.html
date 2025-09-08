@@ -93,6 +93,7 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
+      cursor: zoom-out; /* hint that clicking backdrop will close */
     }
     .overlay.active { display: flex; }
     .overlay-content { max-width: 90%; max-height: 90%; }
@@ -102,8 +103,16 @@
       display: block;
     }
     .close-btn {
-      position: absolute; top: 30px; right: 30px;
-      color: white; font-size: 28px; cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #ccc;
+      font-size: 24px;
+      font-weight: 300;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      color: #fff;
     }
     .caption {
       color: #777;
@@ -122,7 +131,7 @@
   <div class="container">
     <header>
       <h1>Dusty Summers</h1>
-      <p>Creative director at Sub Pop Records.<br>Sometimes freelance.</p>
+      <p>Creative director at Sub Pop Records.<br>Somtimes freelance.</p>
       <div class="social">
         <a href="https://instagram.com/dustysummers" target="_blank" rel="noopener noreferrer me" aria-label="Instagram" title="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -141,10 +150,14 @@
     </header>
 
     <section class="grid" id="grid">
-      <!-- Grid is populated from projects.json -->
+      <!-- Grid is populated from projects.json; with safe single-render + fallback when JSON missing -->
       <script>
         (async function () {
           const grid = document.getElementById('grid');
+
+          // Prevent duplicate rendering
+          if (window.__GRID_RENDERED) return; 
+          window.__GRID_RENDERED = true;
 
           function openOverlay(src) {
             const overlay = document.getElementById('overlay');
@@ -167,26 +180,29 @@
             if (e.key === 'Escape') closeOverlay();
           });
 
-          try {
-            const res = await fetch('projects.json', { cache: 'no-store' });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const projects = await res.json();
+          function clearGrid() {
+            while (grid.firstChild) grid.removeChild(grid.firstChild);
+          }
 
+          function renderItems(items) {
+            clearGrid();
             const frag = document.createDocumentFragment();
-            projects.forEach(function (project) {
-              const image = project.image;
-              const caption = project.caption || '';
+            items.forEach(function (it, idx) {
+              const image = typeof it === 'string' ? it : it.image;
+              const caption = typeof it === 'string' ? '' : (it.caption || '');
 
               const item = document.createElement('div');
               item.className = 'grid-item';
 
               const img = document.createElement('img');
               img.src = image;
-              // Make a plain-text alt from the caption HTML
-              const tmp = document.createElement('div');
-              tmp.innerHTML = caption;
-              const plain = (tmp.textContent || '').trim();
-              img.alt = plain || 'Project image';
+              if (caption) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = caption;
+                img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1));
+              } else {
+                img.alt = 'Project ' + (idx + 1);
+              }
               img.addEventListener('click', function () { openOverlay(image); });
               item.appendChild(img);
 
@@ -197,11 +213,39 @@
 
               frag.appendChild(item);
             });
-
             grid.appendChild(frag);
+          }
+
+          function renderFallback(count) {
+            const items = Array.from({ length: count }, (_, i) => 'images/project' + (i + 1) + '.jpg');
+            renderItems(items);
+          }
+
+          try {
+            const res = await fetch('projects.json', { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const projects = await res.json();
+            renderItems(projects);
           } catch (err) {
-            grid.innerHTML = '<div class="caption">Could not load projects.json</div>';
-            console.error('projects.json load error:', err);
+            console.warn('projects.json load error, using fallback images:', err);
+            renderFallback(10);
+          }
+
+          // Attach close button event handler
+          const closeBtn = document.querySelector('.close-btn');
+          if (closeBtn) {
+            closeBtn.addEventListener('click', closeOverlay);
+          }
+
+          // Close overlay when clicking backdrop (not the content)
+          const overlayEl = document.getElementById('overlay');
+          const overlayContent = document.getElementById('overlayContent');
+          if (overlayEl) {
+            overlayEl.addEventListener('click', function (e) {
+              if (e.target === overlayEl) {
+                closeOverlay();
+              }
+            });
           }
         })();
       </script>
@@ -209,57 +253,8 @@
   </div>
 
   <div class="overlay" id="overlay">
-    <span class="close-btn" onclick="closeOverlay()">&times;</span>
+    <span class="close-btn">&times;</span>
     <div class="overlay-content" id="overlayContent"></div>
   </div>
-
-  <script>
-    fetch('projects.json')
-      .then(response => response.json())
-      .then(projects => {
-        const grid = document.getElementById('grid');
-        const frag = document.createDocumentFragment();
-
-        projects.forEach((project) => {
-          const item = document.createElement('div');
-          item.className = 'grid-item';
-
-          const img = document.createElement('img');
-          img.src = project.image;
-          img.alt = project.caption.replace(/<br>/g, ' ');
-          img.addEventListener('click', () => openOverlay(project.image));
-          item.appendChild(img);
-
-          const cap = document.createElement('div');
-          cap.className = 'caption';
-          cap.innerHTML = project.caption;
-          item.appendChild(cap);
-
-          frag.appendChild(item);
-        });
-
-        grid.appendChild(frag);
-      });
-
-    function openOverlay(src) {
-      const overlay = document.getElementById('overlay');
-      const overlayContent = document.getElementById('overlayContent');
-      if (src.endsWith && src.endsWith('.mp4')) {
-        overlayContent.innerHTML = `<video src="${src}" controls autoplay></video>`;
-      } else {
-        overlayContent.innerHTML = `<img src="${src}" alt="Gallery">`;
-      }
-      overlay.classList.add('active');
-    }
-
-    function closeOverlay() {
-      document.getElementById('overlay').classList.remove('active');
-      document.getElementById('overlayContent').innerHTML = '';
-    }
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeOverlay();
-    });
-  </script>
 </body>
 </html>
