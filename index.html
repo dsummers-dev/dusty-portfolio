@@ -72,13 +72,13 @@
       display: block;
       object-fit: cover;
       border: 1px solid rgba(0,0,0,0.08);
-      filter: grayscale(100%);
+      filter: grayscale(0%);
       transition: filter 200ms ease;
     }
 
     .grid-item:hover img,
     .grid-item:focus-within img {
-      filter: grayscale(0%);
+      filter: grayscale(100%);
     }
 
     @media (prefers-reduced-motion: reduce) {
