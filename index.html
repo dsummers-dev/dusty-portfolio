@@ -55,9 +55,9 @@
       width: 100%;
       height: 100%;
     }
-    .social a:hover {
-      color: #000;
-    }
+    .social a:hover { color: #000; }
+
+    /* Grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -76,63 +76,56 @@
       transition: filter 300ms ease-in-out;
       will-change: filter;
     }
-
     .grid-item:hover img,
-    .grid-item:focus-within img {
-      filter: grayscale(100%);
-    }
+    .grid-item:focus-within img { filter: grayscale(100%); }
+    @media (prefers-reduced-motion: reduce) { .grid-item img { transition: none; } }
 
-    @media (prefers-reduced-motion: reduce) {
-      .grid-item img { transition: none; }
-    }
-
+    /* Overlay */
     .overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      cursor: zoom-out; /* hint that clicking backdrop will close */
+      display: none; align-items: center; justify-content: center;
+      z-index: 10; cursor: zoom-out; /* click backdrop to close */
     }
     .overlay.active { display: flex; }
-    .overlay-content { max-width: 90%; max-height: 90%; }
-    .overlay img, .overlay video {
-      max-width: 100%;
-      max-height: 100%;
-      display: block;
+    .overlay-inner { position: relative; max-width: 90%; max-height: 90%; }
+    .overlay-content { max-width: 100%; max-height: 100%; }
+    .overlay img, .overlay video { max-width: 100%; max-height: 100%; display: block; }
+
+    .close-btn { position: absolute; top: 20px; right: 20px; color: #ccc; font-size: 24px; font-weight: 300; cursor: pointer; }
+    .close-btn:hover { color: #fff; }
+
+    /* Overlay nav */
+    .nav-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; font-size: 12px; padding: 8px 10px; cursor: pointer;
+      backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+      user-select: none; line-height: 1; border-radius: 8px;
     }
-    .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      color: #ccc;
-      font-size: 24px;
-      font-weight: 300;
-      cursor: pointer;
+    .nav-btn:hover { background: rgba(255,255,255,0.2); }
+    .nav-prev { left: -48px; }
+    .nav-next { right: -48px; }
+    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
+
+    /* Overlay caption */
+    .overlay-caption {
+      margin-top: 8px; color: #ddd; font-size: 9pt; line-height: 1.2;
+      font-family: 'Space Mono', monospace; text-align: left;
     }
-    .close-btn:hover {
-      color: #fff;
-    }
-    .caption {
-      color: #777;
-      font-family: 'Space Mono', monospace;
-      font-size: 7pt;
-      margin-top: 4px;
-      line-height: 1.1;
-      font-weight: 500;
-    }
-    .caption em {
-      font-style: italic;
-    }
+    .overlay-caption .more { font-size: 8pt; color: #aaa; text-decoration: underline; cursor: pointer; margin-left: 6px; }
+    .overlay-details { display: none; margin-top: 4px; color: #bbb; font-size: 8pt; line-height: 1.3; }
+
+    /* Card captions under tiles */
+    .caption { color: #777; font-family: 'Space Mono', monospace; font-size: 7pt; margin-top: 4px; line-height: 1.1; font-weight: 500; }
+    .caption em { font-style: italic; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Dusty Summers</h1>
-      <p>Creative director at Sub Pop Records.<br>Sometimes freelance.</p>
+      <p>Creative director at Sub Pop Records.<br>Somtimes freelance.</p>
       <div class="social">
         <a href="https://instagram.com/dustysummers" target="_blank" rel="noopener noreferrer me" aria-label="Instagram" title="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -160,43 +153,113 @@
           if (window.__GRID_RENDERED) return; 
           window.__GRID_RENDERED = true;
 
-          function openOverlay(src) {
-            const overlay = document.getElementById('overlay');
+          // State for overlay gallery
+          let PROJECTS = [];
+          let currentProject = -1;
+          let currentIndex = -1;
+
+          function renderMedia(media) {
             const overlayContent = document.getElementById('overlayContent');
-            if (src && src.endsWith && src.endsWith('.mp4')) {
+            if (!overlayContent) return;
+            if (typeof media === 'string') {
+              const isVideo = media.toLowerCase().endsWith('.mp4');
+              overlayContent.innerHTML = isVideo
+                ? '<video src="' + media + '" controls autoplay></video>'
+                : '<img src="' + media + '" alt="Gallery">';
+              return;
+            }
+            const src = media.src || media.url || media.image || '';
+            const type = (media.type || '').toLowerCase();
+            if (type === 'video' || src.toLowerCase().endsWith('.mp4')) {
               overlayContent.innerHTML = '<video src="' + src + '" controls autoplay></video>';
-            } else if (src) {
+            } else {
               overlayContent.innerHTML = '<img src="' + src + '" alt="Gallery">';
+            }
+          }
+
+          function updateOverlayCaption(project) {
+            const capEl = document.getElementById('overlayCaption');
+            const detailsEl = document.getElementById('overlayDetails');
+            const moreEl = document.getElementById('overlayMore');
+            if (!capEl) return;
+            capEl.innerHTML = project.caption || '';
+            if (project.details) {
+              detailsEl.innerHTML = project.details;
+              moreEl.style.display = 'inline';
+            } else {
+              detailsEl.innerHTML = '';
+              detailsEl.style.display = 'none';
+              moreEl.style.display = 'none';
+            }
+          }
+
+          function openOverlayFor(projectIdx, mediaIdx) {
+            const overlay = document.getElementById('overlay');
+            currentProject = projectIdx;
+            currentIndex = mediaIdx || 0;
+            const project = PROJECTS[projectIdx];
+            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
+            renderMedia(gallery[currentIndex]);
+            updateOverlayCaption(project);
+
+            // show/hide nav
+            const prevBtn = document.querySelector('.nav-prev');
+            const nextBtn = document.querySelector('.nav-next');
+            if (gallery.length > 1) {
+              prevBtn.style.display = 'block';
+              nextBtn.style.display = 'block';
+            } else {
+              prevBtn.style.display = 'none';
+              nextBtn.style.display = 'none';
             }
             overlay.classList.add('active');
           }
 
-          function closeOverlay() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('overlayContent').innerHTML = '';
+          function move(delta) {
+            if (currentProject < 0) return;
+            const project = PROJECTS[currentProject];
+            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
+            if (!gallery.length) return;
+            currentIndex = (currentIndex + delta + gallery.length) % gallery.length;
+            renderMedia(gallery[currentIndex]);
           }
-          window.openOverlay = openOverlay;
+
+          function closeOverlay() {
+            const overlay = document.getElementById('overlay');
+            overlay.classList.remove('active');
+            document.getElementById('overlayContent').innerHTML = '';
+            currentProject = -1;
+            currentIndex = -1;
+          }
           window.closeOverlay = closeOverlay;
+
           document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeOverlay();
           });
 
-          function clearGrid() {
-            while (grid.firstChild) grid.removeChild(grid.firstChild);
-          }
+          function clearGrid() { while (grid.firstChild) grid.removeChild(grid.firstChild); }
+
+          function toArrayMaybe(val) { return Array.isArray(val) ? val : (val ? [val] : []); }
 
           function renderItems(items) {
             clearGrid();
+            PROJECTS = items.map(it => {
+              if (typeof it === 'string') return { image: it };
+              return it;
+            });
+
             const frag = document.createDocumentFragment();
-            items.forEach(function (it, idx) {
-              const image = typeof it === 'string' ? it : it.image;
-              const caption = typeof it === 'string' ? '' : (it.caption || '');
+            PROJECTS.forEach(function (project, idx) {
+              const gallery = project.gallery && project.gallery.length ? project.gallery : toArrayMaybe(project.image || project.src);
+              const cover = gallery[0];
+              const caption = project.caption || '';
 
               const item = document.createElement('div');
               item.className = 'grid-item';
 
               const img = document.createElement('img');
-              img.src = image;
+              const coverSrc = (typeof cover === 'string') ? cover : (cover.src || cover.url || cover.image || '');
+              img.src = coverSrc;
               if (caption) {
                 const tmp = document.createElement('div');
                 tmp.innerHTML = caption;
@@ -204,7 +267,7 @@
               } else {
                 img.alt = 'Project ' + (idx + 1);
               }
-              img.addEventListener('click', function () { openOverlay(image); });
+              img.addEventListener('click', function () { openOverlayFor(idx, 0); });
               item.appendChild(img);
 
               const cap = document.createElement('div');
@@ -232,30 +295,54 @@
             renderFallback(10);
           }
 
-          // Attach close button event handler
+          // Close button
           const closeBtn = document.querySelector('.close-btn');
-          if (closeBtn) {
-            closeBtn.addEventListener('click', closeOverlay);
+          if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+
+          // Backdrop click closes (not content)
+          const overlayEl = document.getElementById('overlay');
+          if (overlayEl) {
+            overlayEl.addEventListener('click', function (e) { if (e.target === overlayEl) closeOverlay(); });
           }
 
-          // Close overlay when clicking backdrop (not the content)
-          const overlayEl = document.getElementById('overlay');
-          const overlayContent = document.getElementById('overlayContent');
-          if (overlayEl) {
-            overlayEl.addEventListener('click', function (e) {
-              if (e.target === overlayEl) {
-                closeOverlay();
-              }
+          // Nav buttons
+          const prevBtn = document.querySelector('.nav-prev');
+          const nextBtn = document.querySelector('.nav-next');
+          if (prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', function (e) { e.stopPropagation(); move(-1); });
+            nextBtn.addEventListener('click', function (e) { e.stopPropagation(); move(1); });
+          }
+
+          // Toggle more details
+          const moreEl = document.getElementById('overlayMore');
+          const detailsEl = document.getElementById('overlayDetails');
+          if (moreEl) {
+            moreEl.addEventListener('click', function (e) {
+              e.stopPropagation();
+              if (!detailsEl) return;
+              const isOpen = detailsEl.style.display === 'block';
+              detailsEl.style.display = isOpen ? 'none' : 'block';
+              moreEl.textContent = isOpen ? 'More' : 'Less';
             });
           }
+
         })();
       </script>
     </section>
   </div>
 
   <div class="overlay" id="overlay">
-    <span class="close-btn">&times;</span>
-    <div class="overlay-content" id="overlayContent"></div>
+    <div class="overlay-inner">
+      <span class="close-btn">&times;</span>
+      <button class="nav-btn nav-prev" aria-label="Previous" title="Previous">Prev</button>
+      <button class="nav-btn nav-next" aria-label="Next" title="Next">Next</button>
+      <div class="overlay-content" id="overlayContent"></div>
+      <div class="overlay-caption">
+        <span id="overlayCaption"></span>
+        <span id="overlayMore" class="more" style="display:none">More</span>
+        <div id="overlayDetails" class="overlay-details"></div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
