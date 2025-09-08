@@ -7,112 +7,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Work Sans', sans-serif;
-      background: white;
-      color: #333;
-      font-size: 10pt;
-      line-height: 1.2;
-      font-weight: 500;
-    }
-    .container {
-      padding: 16pt;
-      max-width: 1600px;
-      margin: auto;
-    }
-    header {
-      position: sticky;
-      top: 0;
-      background: transparent;
-      padding-top: 0;
-      padding-bottom: 8px;
-      margin-bottom: 26px;
-      z-index: 100;
-      line-height: 1.05;
-    }
-    header h1,
-    header p {
-      font-size: 10pt;
-      font-weight: 500;
-      line-height: 1.05;
-      margin: 0;
-    }
-    .social {
-      margin-top: 4px;
-      display: flex;
-      gap: 6px;
-      line-height: 1;
-    }
-    .social a {
-      text-decoration: none;
-      color: #333;
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-    }
-    .social a svg {
-      width: 100%;
-      height: 100%;
-    }
+    body { margin: 0; font-family: 'Work Sans', sans-serif; background: white; color: #333; font-size: 10pt; line-height: 1.2; font-weight: 500; }
+    .container { padding: 16pt; max-width: 1600px; margin: auto; }
+    header { position: sticky; top: 0; background: transparent; padding-top: 0; padding-bottom: 8px; margin-bottom: 26px; z-index: 100; line-height: 1.05; }
+    header h1, header p { font-size: 10pt; font-weight: 500; line-height: 1.05; margin: 0; }
+    .social { margin-top: 4px; display: flex; gap: 6px; line-height: 1; }
+    .social a { text-decoration: none; color: #333; display: inline-block; width: 18px; height: 18px; }
+    .social a svg { width: 100%; height: 100%; }
     .social a:hover { color: #000; }
 
     /* Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 24px 8px;
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 24px 8px; }
     .grid-item { cursor: pointer; }
 
     /* IMAGE TILE */
-    .grid-item img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      display: block;
-      object-fit: cover;
-      border: 1px solid rgba(0,0,0,0.08);
-      filter: grayscale(0%);
-      transition: filter 300ms ease-in-out;
-      will-change: filter;
-    }
-    .grid-item:hover img,
-    .grid-item:focus-within img { filter: grayscale(100%); }
+    .grid-item img { width: 100%; aspect-ratio: 1 / 1; display: block; object-fit: cover; border: 1px solid rgba(0,0,0,0.08); filter: grayscale(0%); transition: filter 300ms ease-in-out; will-change: filter; }
+    .grid-item:hover img, .grid-item:focus-within img { filter: grayscale(100%); }
     @media (prefers-reduced-motion: reduce) { .grid-item img { transition: none; } }
 
     /* Overlay */
-    .overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.9);
-      display: none; align-items: center; justify-content: center;
-      z-index: 10; cursor: zoom-out; /* click backdrop to close */
-    }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; }
     .overlay.active { display: flex; }
-    .overlay-inner { position: relative; max-width: 90%; max-height: 90%; }
+    .overlay-inner { position: relative; max-width: 1400px; max-height: 85vh; }
     .overlay-content { max-width: 100%; max-height: 100%; }
     .overlay img, .overlay video { max-width: 100%; max-height: 100%; display: block; }
 
     .close-btn { position: absolute; top: 20px; right: 20px; color: #ccc; font-size: 24px; font-weight: 300; cursor: pointer; }
     .close-btn:hover { color: #fff; }
 
-    /* Overlay nav */
-    .nav-btn {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
-      color: #fff; font-size: 12px; padding: 8px 10px; cursor: pointer;
-      backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
-      user-select: none; line-height: 1; border-radius: 8px;
-    }
-    .nav-btn:hover { background: rgba(255,255,255,0.2); }
-    .nav-prev { left: -48px; }
-    .nav-next { right: -48px; }
-    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
+    /* Nav arrows */
+    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ccc; font-size: 28px; font-weight: 300; cursor: pointer; padding: 4px 8px; line-height: 1; }
+    .nav-btn:hover { color: #fff; }
+    .nav-prev { left: -36px; }
+    .nav-next { right: -36px; }
+    @media (max-width: 640px) { .nav-prev { left: -28px; } .nav-next { right: -28px; } }
+
+    /* Peek previews */
+    .peek { position: absolute; top: 50%; transform: translateY(-50%); width: 10%; max-height: 70vh; opacity: 0.45; pointer-events: none; }
+    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
+    .peek-left { left: -12%; }
+    .peek-right { right: -12%; }
 
     /* Overlay caption */
-    .overlay-caption {
-      margin-top: 8px; color: #ddd; font-size: 9pt; line-height: 1.2;
-      font-family: 'Space Mono', monospace; text-align: left;
-    }
+    .overlay-caption { margin-top: 8px; color: #ddd; font-size: 9pt; line-height: 1.2; font-family: 'Space Mono', monospace; text-align: left; }
     .overlay-caption .more { font-size: 8pt; color: #aaa; text-decoration: underline; cursor: pointer; margin-left: 6px; }
     .overlay-details { display: none; margin-top: 4px; color: #bbb; font-size: 8pt; line-height: 1.3; }
 
@@ -144,37 +81,49 @@
     </header>
 
     <section class="grid" id="grid">
-      <!-- Grid is populated from projects.json; with safe single-render + fallback when JSON missing -->
       <script>
         (async function () {
           const grid = document.getElementById('grid');
-
-          // Prevent duplicate rendering
           if (window.__GRID_RENDERED) return; 
           window.__GRID_RENDERED = true;
 
-          // State for overlay gallery
           let PROJECTS = [];
           let currentProject = -1;
           let currentIndex = -1;
 
+          function getMediaSrc(media) {
+            if (!media) return '';
+            if (typeof media === 'string') return media;
+            return media.src || media.url || media.image || '';
+          }
+          function isVideo(media) {
+            const src = getMediaSrc(media).toLowerCase();
+            const type = (media && media.type || '').toLowerCase();
+            return type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
+          }
+
           function renderMedia(media) {
             const overlayContent = document.getElementById('overlayContent');
             if (!overlayContent) return;
-            if (typeof media === 'string') {
-              const isVideo = media.toLowerCase().endsWith('.mp4');
-              overlayContent.innerHTML = isVideo
-                ? '<video src="' + media + '" controls autoplay></video>'
-                : '<img src="' + media + '" alt="Gallery">';
-              return;
-            }
-            const src = media.src || media.url || media.image || '';
-            const type = (media.type || '').toLowerCase();
-            if (type === 'video' || src.toLowerCase().endsWith('.mp4')) {
-              overlayContent.innerHTML = '<video src="' + src + '" controls autoplay></video>';
-            } else {
-              overlayContent.innerHTML = '<img src="' + src + '" alt="Gallery">';
-            }
+            const src = getMediaSrc(media);
+            if (!src) { overlayContent.innerHTML = ''; return; }
+            overlayContent.innerHTML = isVideo(media)
+              ? '<video src="' + src + '" controls autoplay></video>'
+              : '<img src="' + src + '" alt="Gallery">';
+          }
+
+          function updatePeeks(project) {
+            const left = document.getElementById('peekLeft');
+            const right = document.getElementById('peekRight');
+            if (!left || !right) return;
+            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
+            if (gallery.length <= 1) { left.innerHTML = ''; right.innerHTML = ''; return; }
+            const prevIdx = (currentIndex - 1 + gallery.length) % gallery.length;
+            const nextIdx = (currentIndex + 1) % gallery.length;
+            const prevMedia = gallery[prevIdx];
+            const nextMedia = gallery[nextIdx];
+            left.innerHTML = isVideo(prevMedia) ? '' : '<img src="' + getMediaSrc(prevMedia) + '" alt="Prev">';
+            right.innerHTML = isVideo(nextMedia) ? '' : '<img src="' + getMediaSrc(nextMedia) + '" alt="Next">';
           }
 
           function updateOverlayCaption(project) {
@@ -185,6 +134,7 @@
             capEl.innerHTML = project.caption || '';
             if (project.details) {
               detailsEl.innerHTML = project.details;
+              detailsEl.style.display = 'none';
               moreEl.style.display = 'inline';
             } else {
               detailsEl.innerHTML = '';
@@ -201,17 +151,12 @@
             const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
             renderMedia(gallery[currentIndex]);
             updateOverlayCaption(project);
+            updatePeeks(project);
 
-            // show/hide nav
             const prevBtn = document.querySelector('.nav-prev');
             const nextBtn = document.querySelector('.nav-next');
-            if (gallery.length > 1) {
-              prevBtn.style.display = 'block';
-              nextBtn.style.display = 'block';
-            } else {
-              prevBtn.style.display = 'none';
-              nextBtn.style.display = 'none';
-            }
+            if (gallery.length > 1) { prevBtn.style.display = 'block'; nextBtn.style.display = 'block'; }
+            else { prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
             overlay.classList.add('active');
           }
 
@@ -222,6 +167,7 @@
             if (!gallery.length) return;
             currentIndex = (currentIndex + delta + gallery.length) % gallery.length;
             renderMedia(gallery[currentIndex]);
+            updatePeeks(project);
           }
 
           function closeOverlay() {
@@ -238,16 +184,11 @@
           });
 
           function clearGrid() { while (grid.firstChild) grid.removeChild(grid.firstChild); }
-
           function toArrayMaybe(val) { return Array.isArray(val) ? val : (val ? [val] : []); }
 
           function renderItems(items) {
             clearGrid();
-            PROJECTS = items.map(it => {
-              if (typeof it === 'string') return { image: it };
-              return it;
-            });
-
+            PROJECTS = items.map(it => (typeof it === 'string') ? { image: it } : it);
             const frag = document.createDocumentFragment();
             PROJECTS.forEach(function (project, idx) {
               const gallery = project.gallery && project.gallery.length ? project.gallery : toArrayMaybe(project.image || project.src);
@@ -260,13 +201,8 @@
               const img = document.createElement('img');
               const coverSrc = (typeof cover === 'string') ? cover : (cover.src || cover.url || cover.image || '');
               img.src = coverSrc;
-              if (caption) {
-                const tmp = document.createElement('div');
-                tmp.innerHTML = caption;
-                img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1));
-              } else {
-                img.alt = 'Project ' + (idx + 1);
-              }
+              if (caption) { const tmp = document.createElement('div'); tmp.innerHTML = caption; img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1)); }
+              else { img.alt = 'Project ' + (idx + 1); }
               img.addEventListener('click', function () { openOverlayFor(idx, 0); });
               item.appendChild(img);
 
@@ -280,10 +216,7 @@
             grid.appendChild(frag);
           }
 
-          function renderFallback(count) {
-            const items = Array.from({ length: count }, (_, i) => 'images/project' + (i + 1) + '.jpg');
-            renderItems(items);
-          }
+          function renderFallback(count) { const items = Array.from({ length: count }, (_, i) => 'images/project' + (i + 1) + '.jpg'); renderItems(items); }
 
           try {
             const res = await fetch('projects.json', { cache: 'no-store' });
@@ -295,37 +228,22 @@
             renderFallback(10);
           }
 
-          // Close button
+          // UI wiring
           const closeBtn = document.querySelector('.close-btn');
           if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
-
-          // Backdrop click closes (not content)
           const overlayEl = document.getElementById('overlay');
-          if (overlayEl) {
-            overlayEl.addEventListener('click', function (e) { if (e.target === overlayEl) closeOverlay(); });
-          }
-
-          // Nav buttons
+          if (overlayEl) overlayEl.addEventListener('click', function (e) { if (e.target === overlayEl) closeOverlay(); });
           const prevBtn = document.querySelector('.nav-prev');
           const nextBtn = document.querySelector('.nav-next');
           if (prevBtn && nextBtn) {
             prevBtn.addEventListener('click', function (e) { e.stopPropagation(); move(-1); });
             nextBtn.addEventListener('click', function (e) { e.stopPropagation(); move(1); });
           }
-
-          // Toggle more details
           const moreEl = document.getElementById('overlayMore');
           const detailsEl = document.getElementById('overlayDetails');
           if (moreEl) {
-            moreEl.addEventListener('click', function (e) {
-              e.stopPropagation();
-              if (!detailsEl) return;
-              const isOpen = detailsEl.style.display === 'block';
-              detailsEl.style.display = isOpen ? 'none' : 'block';
-              moreEl.textContent = isOpen ? 'More' : 'Less';
-            });
+            moreEl.addEventListener('click', function (e) { e.stopPropagation(); if (!detailsEl) return; const isOpen = detailsEl.style.display === 'block'; detailsEl.style.display = isOpen ? 'none' : 'block'; moreEl.textContent = isOpen ? 'More' : 'Less'; });
           }
-
         })();
       </script>
     </section>
@@ -334,9 +252,11 @@
   <div class="overlay" id="overlay">
     <div class="overlay-inner">
       <span class="close-btn">&times;</span>
-      <button class="nav-btn nav-prev" aria-label="Previous" title="Previous">Prev</button>
-      <button class="nav-btn nav-next" aria-label="Next" title="Next">Next</button>
+      <button class="nav-btn nav-prev" aria-label="Previous" title="Previous">&#x2039;</button>
+      <button class="nav-btn nav-next" aria-label="Next" title="Next">&#x203A;</button>
       <div class="overlay-content" id="overlayContent"></div>
+      <div id="peekLeft" class="peek peek-left"></div>
+      <div id="peekRight" class="peek peek-right"></div>
       <div class="overlay-caption">
         <span id="overlayCaption"></span>
         <span id="overlayMore" class="more" style="display:none">More</span>
