@@ -7,58 +7,244 @@
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Work Sans', sans-serif; background: white; color: #333; font-size: 10pt; line-height: 1.2; font-weight: 500; }
-    .container { padding: 16pt; max-width: 1600px; margin: auto; }
-    header { position: sticky; top: 0; background: transparent; padding-top: 0; padding-bottom: 8px; margin-bottom: 26px; z-index: 100; line-height: 1.05; }
-    header h1, header p { font-size: 10pt; font-weight: 500; line-height: 1.05; margin: 0; }
-    .social { margin-top: 4px; display: flex; gap: 6px; line-height: 1; }
-    .social a { text-decoration: none; color: #333; display: inline-block; width: 18px; height: 18px; }
-    .social a svg { width: 100%; height: 100%; }
+    
+    body { 
+      margin: 0; 
+      font-family: 'Work Sans', sans-serif; 
+      background: white; 
+      color: #333; 
+      font-size: 10pt; 
+      line-height: 1.2; 
+      font-weight: 500; 
+    }
+    
+    .container { 
+      padding: 16pt; 
+      max-width: 1600px; 
+      margin: auto; 
+    }
+    
+    /* Header */
+    header { 
+      position: sticky; 
+      top: 0; 
+      background: white; 
+      padding: 0 0 8px;
+      margin-bottom: 26px; 
+      z-index: 100; 
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    header h1, header p { 
+      font-size: 10pt; 
+      font-weight: 500; 
+      line-height: 1.05; 
+      margin: 0; 
+    }
+    
+    /* Social Links */
+    .social { 
+      margin-top: 4px; 
+      display: flex; 
+      gap: 6px; 
+    }
+    
+    .social a { 
+      text-decoration: none; 
+      color: #333; 
+      width: 18px; 
+      height: 18px; 
+      transition: color 0.2s ease;
+    }
+    
     .social a:hover { color: #000; }
+    .social svg { width: 100%; height: 100%; }
 
-    /* Grid */
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 24px 8px; }
-    .grid-item { cursor: pointer; }
+    /* Grid Layout */
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+      gap: 24px 8px; 
+    }
 
-    /* IMAGE TILE */
-    .grid-item img { width: 100%; aspect-ratio: 1 / 1; display: block; object-fit: cover; border: 1px solid rgba(0,0,0,0.08); filter: grayscale(0%); transition: filter 300ms ease-in-out; will-change: filter; }
-    .grid-item:hover img, .grid-item:focus-within img { filter: grayscale(100%); }
-    @media (prefers-reduced-motion: reduce) { .grid-item img { transition: none; } }
+    /* Grid Items - NO SHADOW */
+    .grid-item { 
+      cursor: pointer;
+    }
+    
+    .grid-item img { 
+      width: 100%; 
+      aspect-ratio: 1; 
+      object-fit: cover; 
+      border: 1px solid rgba(0,0,0,0.08); 
+      border-radius: 4px;
+      filter: grayscale(0%); 
+      transition: filter 0.3s ease; 
+      display: block;
+    }
+    
+    .grid-item:hover img { 
+      filter: grayscale(100%); 
+    }
 
-    /* Overlay */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; }
-    .overlay.active { display: flex; }
-    .overlay-inner { position: relative; max-width: 90%; max-height: 90vh; }
-    .overlay-content { max-width: 100%; max-height: 90vh; }
-    .overlay img, .overlay video { max-width: 100%; max-height: 90vh; height: auto; width: auto; margin: auto; display: block; }
+    /* Captions */
+    .caption { 
+      color: #777; 
+      font-family: 'Space Mono', monospace; 
+      font-size: 7pt; 
+      margin-top: 4px; 
+      line-height: 1.1; 
+      font-weight: 500; 
+    }
 
-    .close-btn { position: absolute; top: 20px; right: 20px; color: #ccc; font-size: 24px; font-weight: 300; cursor: pointer; }
-    .close-btn:hover { color: #fff; }
+    /* Modern Lightbox */
+    .lightbox { 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0,0,0,0.95); 
+      display: none; 
+      align-items: center;
+      justify-content: center;
+      z-index: 1000; 
+      cursor: zoom-out;
+      padding: 2rem;
+    }
+    
+    .lightbox.active { 
+      display: flex; 
+    }
+    
+    .lightbox-content { 
+      position: relative; 
+      max-width: 90vw; 
+      max-height: 90vh; 
+    }
+    
+    .lightbox img, 
+    .lightbox video { 
+      max-width: 100%; 
+      max-height: 90vh; 
+      height: auto; 
+      border-radius: 8px;
+    }
 
-    /* Overlay caption */
-    .overlay-caption { position: absolute; top: 0; right: 0; color: #ddd; font-size: 9pt; line-height: 1.2; font-family: 'Space Mono', monospace; text-align: left; max-width: 38%; padding-left: 12px; }
-    .overlay-caption .more { display: none; }
-    .overlay-details { display: block; margin-top: 4px; color: #bbb; font-size: 8pt; line-height: 1.3; }
+    /* Lightbox Controls */
+    .lightbox-close { 
+      position: absolute; 
+      top: -50px; 
+      right: 0; 
+      color: rgba(255,255,255,0.7); 
+      font-size: 28px; 
+      cursor: pointer; 
+      transition: color 0.2s ease;
+      line-height: 1;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .lightbox-close:hover { 
+      color: white; 
+      background: rgba(255,255,255,0.2);
+    }
 
-    /* Card captions under tiles */
-    .caption { color: #777; font-family: 'Space Mono', monospace; font-size: 7pt; margin-top: 4px; line-height: 1.1; font-weight: 500; }
-    .caption em { font-style: italic; }
+    /* Lightbox Caption */
+    .lightbox-info { 
+      position: absolute; 
+      top: 0; 
+      right: -300px; 
+      width: 280px; 
+      color: rgba(255,255,255,0.9); 
+      font-family: 'Space Mono', monospace; 
+      font-size: 9pt; 
+      line-height: 1.3; 
+    }
+    
+    .lightbox-details { 
+      margin-top: 8px; 
+      color: rgba(255,255,255,0.7); 
+      font-size: 8pt; 
+      line-height: 1.4; 
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .lightbox-info { 
+        position: static; 
+        width: 100%; 
+        margin-top: 1rem; 
+      }
+      
+      .lightbox-close { 
+        top: -40px; 
+        font-size: 24px; 
+      }
+      
+      .grid { 
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+        gap: 16px 6px; 
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) { 
+      *, *::before, *::after { 
+        transition: none !important; 
+        animation: none !important; 
+      } 
+    }
+
+    /* Loading State - Hand-crafted/Sketchy Style */
+    .grid-item img { 
+      background: #f8f8f8; 
+    }
+    
+    .loading { 
+      position: relative; 
+      overflow: hidden; 
+    }
+    
+    .loading::after { 
+      content: ''; 
+      position: absolute; 
+      top: 0; 
+      right: 0; 
+      bottom: 0; 
+      left: 0; 
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(0,0,0,0.03) 8px,
+        rgba(0,0,0,0.03) 16px
+      );
+      animation: sketch-loading 2s ease-in-out infinite alternate; 
+    }
+    
+    @keyframes sketch-loading { 
+      0% { opacity: 0.3; transform: translateX(-2px); } 
+      50% { opacity: 0.1; transform: translateX(0px); }
+      100% { opacity: 0.3; transform: translateX(2px); } 
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Dusty Summers</h1>
-      <p>Creative director at Sub Pop Records.<br>Somtimes freelance.</p>
+      <p>Creative director at Sub Pop Records.<br>Sometimes freelance.</p>
       <div class="social">
-        <a href="https://instagram.com/dustysummers" target="_blank" rel="noopener noreferrer me" aria-label="Instagram" title="Instagram">
+        <a href="https://instagram.com/dustysummers" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/>
             <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
             <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
           </svg>
         </a>
-        <a href="mailto:dsummers@gmail.com" aria-label="Email" title="Email">
+        <a href="mailto:dsummers@gmail.com" aria-label="Email">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="2" y="4" width="20" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
             <path d="M22 6 12 13 2 6" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -67,139 +253,113 @@
       </div>
     </header>
 
-    <section class="grid" id="grid">
-      <script>
-        (async function() {
-          const grid = document.getElementById('grid');
-          if (window.__GRID_RENDERED) return;
-          window.__GRID_RENDERED = true;
-
-          let PROJECTS = [];
-          let currentProject = -1;
-
-          function getMediaSrc(media) {
-            if (!media) return '';
-            if (typeof media === 'string') return media;
-            return media.src || media.url || media.image || '';
-          }
-          function isVideo(media) {
-            const src = getMediaSrc(media).toLowerCase();
-            const type = (media && media.type || '').toLowerCase();
-            return type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
-          }
-
-          function renderMedia(media) {
-            const overlayContent = document.getElementById('overlayContent');
-            if (!overlayContent) return;
-            const src = getMediaSrc(media);
-            if (!src) { overlayContent.innerHTML = ''; return; }
-            overlayContent.innerHTML = isVideo(media)
-              ? '<video src="' + src + '" controls autoplay></video>'
-              : '<img src="' + src + '" alt="Gallery">';
-          }
-
-          function updateOverlayCaption(project) {
-            const capEl = document.getElementById('overlayCaption');
-            const detailsEl = document.getElementById('overlayDetails');
-            if (!capEl) return;
-            capEl.innerHTML = project.caption || '';
-            if (project.details) {
-              detailsEl.innerHTML = project.details;
-              detailsEl.style.display = 'block';
-            } else {
-              detailsEl.innerHTML = '';
-              detailsEl.style.display = 'none';
-            }
-          }
-
-          function openOverlayFor(projectIdx) {
-            const overlay = document.getElementById('overlay');
-            currentProject = projectIdx;
-            const project = PROJECTS[projectIdx];
-            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
-            const displayMedia = gallery.length > 1 ? gallery[1] : gallery[0];
-            renderMedia(displayMedia);
-            updateOverlayCaption(project);
-            overlay.classList.add('active');
-          }
-
-          function closeOverlay() {
-            const overlay = document.getElementById('overlay');
-            overlay.classList.remove('active');
-            const overlayContent = document.getElementById('overlayContent');
-            if (overlayContent) overlayContent.innerHTML = '';
-            currentProject = -1;
-          }
-          window.closeOverlay = closeOverlay;
-
-          document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeOverlay();
-          });
-
-          function clearGrid() { while (grid.firstChild) grid.removeChild(grid.firstChild); }
-          function toArrayMaybe(val) { return Array.isArray(val) ? val : (val ? [val] : []); }
-
-          function renderItems(items) {
-            clearGrid();
-            PROJECTS = items.map(function(it){ return (typeof it === 'string') ? { image: it } : it; });
-            const frag = document.createDocumentFragment();
-            PROJECTS.forEach(function(project, idx) {
-              const gallery = project.gallery && project.gallery.length ? project.gallery : toArrayMaybe(project.image || project.src);
-              const cover = gallery[0];
-              const caption = project.caption || '';
-
-              const item = document.createElement('div');
-              item.className = 'grid-item';
-
-              const img = document.createElement('img');
-              const coverSrc = (typeof cover === 'string') ? cover : (cover && (cover.src || cover.url || cover.image)) || '';
-              img.src = coverSrc;
-              if (caption) { const tmp = document.createElement('div'); tmp.innerHTML = caption; img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1)); }
-              else { img.alt = 'Project ' + (idx + 1); }
-              img.addEventListener('click', function(){ openOverlayFor(idx); });
-              item.appendChild(img);
-
-              const cap = document.createElement('div');
-              cap.className = 'caption';
-              cap.innerHTML = caption;
-              item.appendChild(cap);
-
-              frag.appendChild(item);
-            });
-            grid.appendChild(frag);
-          }
-
-          function renderFallback(count) { const items = Array.from({ length: count }, function(_, i){ return 'images/project' + (i + 1) + '.jpg'; }); renderItems(items); }
-
-          try {
-            const res = await fetch('projects.json', { cache: 'no-store' });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const projects = await res.json();
-            renderItems(projects);
-          } catch (err) {
-            console.warn('projects.json load error, using fallback images:', err);
-            renderFallback(10);
-          }
-
-          const closeBtn = document.querySelector('.close-btn');
-          if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
-
-          const overlayEl = document.getElementById('overlay');
-          if (overlayEl) overlayEl.addEventListener('click', function(e){ if (e.target === overlayEl) closeOverlay(); });
-        })();
-      </script>
-    </section>
+    <section class="grid" id="grid"></section>
   </div>
 
-  <div class="overlay" id="overlay">
-    <div class="overlay-inner">
-      <span class="close-btn">&times;</span>
-      <div class="overlay-content" id="overlayContent"></div>
-      <div class="overlay-caption">
-        <span id="overlayCaption"></span>
-        <div id="overlayDetails" class="overlay-details"></div>
+  <!-- Modern Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+      <div class="lightbox-close" id="lightbox-close">&times;</div>
+      <div class="lightbox-media" id="lightbox-media"></div>
+      <div class="lightbox-info">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+        <div class="lightbox-details" id="lightbox-details"></div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Simple, working gallery
+    let projects = [];
+    let currentIndex = -1;
+
+    // Create fallback projects for demo
+    projects = Array.from({ length: 12 }, (_, i) => ({
+      image: `https://picsum.photos/400/400?random=${i + 1}`,
+      caption: `Project ${i + 1}`,
+      details: `Details for project ${i + 1}`
+    }));
+
+    // DOM elements
+    const grid = document.getElementById('grid');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxMedia = document.getElementById('lightbox-media');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxDetails = document.getElementById('lightbox-details');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    // Render grid
+    function renderGrid() {
+      grid.innerHTML = '';
+      projects.forEach((project, index) => {
+        const item = document.createElement('div');
+        item.className = 'grid-item';
+        
+        const img = document.createElement('img');
+        img.src = project.image;
+        img.alt = project.caption || `Project ${index + 1}`;
+        img.loading = 'lazy';
+        
+        // Click handler
+        img.addEventListener('click', () => openLightbox(index));
+        
+        const caption = document.createElement('div');
+        caption.className = 'caption';
+        caption.innerHTML = project.caption || '';
+        
+        item.appendChild(img);
+        item.appendChild(caption);
+        grid.appendChild(item);
+      });
+    }
+
+    // Open lightbox
+    function openLightbox(index) {
+      currentIndex = index;
+      const project = projects[index];
+      
+      // Show image
+      lightboxMedia.innerHTML = `<img src="${project.image}" alt="${project.caption || 'Gallery image'}">`;
+      
+      // Show info
+      lightboxCaption.innerHTML = project.caption || '';
+      lightboxDetails.innerHTML = project.details || '';
+      
+      // Show lightbox
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close lightbox
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      currentIndex = -1;
+      lightboxMedia.innerHTML = '';
+    }
+
+    // Event listeners
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Initialize
+    renderGrid();
+
+    // Try to load actual projects
+    fetch('projects.json', { cache: 'no-store' })
+      .then(response => response.json())
+      .then(data => {
+        projects = data;
+        renderGrid();
+      })
+      .catch(error => {
+        console.warn('Using fallback projects:', error);
+      });
+  </script>
 </body>
 </html>
