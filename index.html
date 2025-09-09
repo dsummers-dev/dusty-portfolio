@@ -64,6 +64,8 @@
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
       gap: 24px 8px; 
+      max-width: calc(10 * 130px + 9 * 8px); /* Limit to 10 columns max */
+      margin: 0 auto;
     }
 
     /* Grid Items - NO BORDER, minimal rounded corners */
