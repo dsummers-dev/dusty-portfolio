@@ -1,5 +1,11 @@
 [
-  { "image": "images/FlockofDimes_TLYS_900px.jpg", "caption": "Flock of Dimes<br><em>The Life You Save</em><br>2026" },
+   { "gallery": [
+      "images/images/FlockofDimes_TLYS_900px.jpg",
+      "images/FlockOfDimes_TheLifeYouSave_Mockup_EU_LP_2000x1417.jpg"
+    ],
+    "caption": "Flock of Dimes<br><em>The Life You Save</em><br>2026",
+    "details": "Creative Direction<br>Art Direction<br>Design<br><br>Photography by<br>Graham Tolbert"
+  },
 
   { "gallery": [
       "images/BretMcKenzie_FreakOutCity_900px.jpg",
@@ -8,6 +14,16 @@
     "caption": "Bret McKenzie<br><em>Freak Out City</em><br>2025",
     "details": "Creative Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Ardneks"
   },
+
+  { "gallery": [
+      "images/FrankieCosmos_DifferentTalking_900px.jpg",
+      "images/FrankieCosmos_DifferentTalking_Mockup_LP_EU_2000x1417.jpg"
+    ],
+    "caption": "Frankie Cosmos<br><em>Different Talking</em><br>2025",
+    "details": "Creative Direction<br>Art Direction<br>Design"
+  },
+
+
 
   { "image": "images/FrankieCosmos_DifferentTalking_900px.jpg", "caption": "Frankie Cosmos<br><em>Different Talking</em><br>2025" },
   { "image": "images/TheBugClub_VeryHumanFeatures_900px.jpg", "caption": "The Bug Club<br><em>Very Human Features</em><br>2025" },
