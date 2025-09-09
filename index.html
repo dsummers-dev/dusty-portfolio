@@ -100,7 +100,7 @@
       font-weight: 500; 
     }
 
-    /* Lightbox - NO CLOSE BUTTON */
+    /* Lightbox */
     .lightbox { 
       position: fixed; 
       inset: 0; 
@@ -122,22 +122,23 @@
       position: relative; 
       max-width: 90vw; 
       max-height: 90vh; 
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
     }
     
-    .lightbox img, 
-    .lightbox video { 
-      max-width: 100%; 
-      max-height: 90vh; 
-      height: auto; 
+    .lightbox-main { 
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      width: 100%;
     }
-
-    /* Caption aligned to bottom */
+    
     .lightbox-info { 
-      position: absolute; 
-      bottom: 0; 
-      right: -300px; 
+      flex-shrink: 0;
       width: 280px; 
-      color: rgba(255,255,255,0.7); 
+      color: rgba(255,255,255,0.9); 
       font-family: 'Space Mono', monospace; 
       font-size: 9pt; 
       line-height: 1.3; 
@@ -145,19 +146,87 @@
     
     .lightbox-details { 
       margin-top: 8px; 
-      color: rgba(255,255,255,0.5); 
+      color: rgba(255,255,255,0.6); 
       font-size: 8pt; 
       line-height: 1.4; 
     }
+    
+    .lightbox-media { 
+      flex: 1;
+    }
+    
+    .lightbox img, 
+    .lightbox video { 
+      max-width: 100%; 
+      max-height: 70vh; 
+      height: auto; 
+      cursor: default;
+    }
+    
+    /* Navigation */
+    .lightbox-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .nav-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.7);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: 'Space Mono', monospace;
+      font-size: 8pt;
+      border-radius: 2px;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,1);
+      border-color: rgba(255,255,255,0.5);
+    }
+    
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    .nav-btn:disabled:hover {
+      background: none;
+      color: rgba(255,255,255,0.7);
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .nav-counter {
+      color: rgba(255,255,255,0.5);
+      font-family: 'Space Mono', monospace;
+      font-size: 8pt;
+      margin: 0 8px;
+    }
 
     /* Responsive Design */
-    @media (max-width: 768px) {
-      .lightbox-info { 
-        position: static; 
-        width: 100%; 
-        margin-top: 1rem; 
+    @media (max-width: 968px) {
+      .lightbox-main {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
       }
       
+      .lightbox-info { 
+        width: 100%; 
+        max-width: 400px;
+        text-align: center;
+      }
+      
+      .lightbox img {
+        max-height: 50vh;
+      }
+    }
+    
+    @media (max-width: 768px) {
       .grid { 
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
         gap: 16px 6px; 
@@ -167,8 +236,17 @@
         max-width: none; /* Remove max-width constraint on mobile */
       }
       
-      header {
-        max-width: none; /* Remove max-width constraint on mobile */
+      .lightbox {
+        padding: 1rem;
+      }
+      
+      .lightbox-content {
+        gap: 1rem;
+      }
+      
+      .nav-btn {
+        padding: 6px 12px;
+        font-size: 7pt;
       }
     }
 
@@ -238,19 +316,26 @@
     <section class="grid" id="grid"></section>
   </div>
 
-  <!-- Clean Lightbox - NO CLOSE BUTTON -->
+  <!-- Lightbox with Navigation -->
   <div class="lightbox" id="lightbox">
     <div class="lightbox-content">
-      <div class="lightbox-media" id="lightbox-media"></div>
-      <div class="lightbox-info">
-        <div class="lightbox-caption" id="lightbox-caption"></div>
-        <div class="lightbox-details" id="lightbox-details"></div>
+      <div class="lightbox-main">
+        <div class="lightbox-info">
+          <div class="lightbox-caption" id="lightbox-caption"></div>
+          <div class="lightbox-details" id="lightbox-details"></div>
+        </div>
+        <div class="lightbox-media" id="lightbox-media"></div>
+      </div>
+      <div class="lightbox-nav">
+        <button class="nav-btn" id="prev-btn">← Previous</button>
+        <span class="nav-counter" id="nav-counter"></span>
+        <button class="nav-btn" id="next-btn">Next →</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Gallery with proper gallery support
+    // Gallery with proper gallery support and navigation
     let projects = [];
     let currentIndex = -1;
 
@@ -280,6 +365,9 @@
     const lightboxMedia = document.getElementById('lightbox-media');
     const lightboxCaption = document.getElementById('lightbox-caption');
     const lightboxDetails = document.getElementById('lightbox-details');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const navCounter = document.getElementById('nav-counter');
 
     // Get image source from various formats
     function getImageSrc(imageData) {
@@ -321,10 +409,11 @@
       });
     }
 
-    // Open lightbox
-    function openLightbox(index) {
-      currentIndex = index;
-      const project = projects[index];
+    // Update lightbox content
+    function updateLightboxContent() {
+      if (currentIndex < 0 || currentIndex >= projects.length) return;
+      
+      const project = projects[currentIndex];
       
       // Determine which image to show in lightbox
       let displayImageSrc;
@@ -343,7 +432,21 @@
       lightboxCaption.innerHTML = project.caption || '';
       lightboxDetails.innerHTML = project.details || '';
       
-      // Show lightbox
+      // Update navigation
+      updateNavigation();
+    }
+
+    // Update navigation buttons and counter
+    function updateNavigation() {
+      prevBtn.disabled = currentIndex <= 0;
+      nextBtn.disabled = currentIndex >= projects.length - 1;
+      navCounter.textContent = `${currentIndex + 1} of ${projects.length}`;
+    }
+
+    // Open lightbox
+    function openLightbox(index) {
+      currentIndex = index;
+      updateLightboxContent();
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -356,13 +459,45 @@
       lightboxMedia.innerHTML = '';
     }
 
-    // Event listeners - NO CLOSE BUTTON
+    // Navigate to previous image
+    function goToPrevious() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateLightboxContent();
+      }
+    }
+
+    // Navigate to next image
+    function goToNext() {
+      if (currentIndex < projects.length - 1) {
+        currentIndex++;
+        updateLightboxContent();
+      }
+    }
+
+    // Event listeners
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
     });
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
+      if (!lightbox.classList.contains('active')) return;
+      
+      switch(e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowLeft':
+          goToPrevious();
+          break;
+        case 'ArrowRight':
+          goToNext();
+          break;
+      }
     });
+
+    prevBtn.addEventListener('click', goToPrevious);
+    nextBtn.addEventListener('click', goToNext);
 
     // Initialize
     renderGrid();
