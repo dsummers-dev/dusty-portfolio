@@ -28,30 +28,12 @@
     /* Overlay */
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 10; cursor: zoom-out; }
     .overlay.active { display: flex; }
-    .overlay-inner { position: relative; max-width: 1400px; max-height: 85vh; padding-top: 2px; }
-    .overlay-content { max-width: 100%; max-height: 100%; }
-    .overlay img, .overlay video { max-width: 100%; max-height: 100%; display: block; }
+    .overlay-inner { position: relative; max-width: 90%; max-height: 90vh; }
+    .overlay-content { max-width: 100%; max-height: 90vh; }
+    .overlay img, .overlay video { max-width: 100%; max-height: 90vh; height: auto; width: auto; margin: auto; display: block; }
 
     .close-btn { position: absolute; top: 20px; right: 20px; color: #ccc; font-size: 24px; font-weight: 300; cursor: pointer; }
     .close-btn:hover { color: #fff; }
-
-    /* Nav arrows */
-    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ccc; font-size: 32px; font-weight: 300; cursor: pointer; padding: 4px 10px; line-height: 1; z-index: 2; }
-    .nav-btn:hover { color: #fff; }
-    .nav-prev { left: -48px; }
-    .nav-next { right: -48px; }
-    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
-    .nav-btn:hover { color: #fff; }
-    .nav-prev { left: -36px; }
-    .nav-next { right: -36px; }
-    @media (max-width: 640px) { .nav-prev { left: -28px; } .nav-next { right: -28px; } }
-
-    /* Peek previews */
-    .peek { position: absolute; top: 50%; transform: translateY(-50%); width: 16%; max-height: 70vh; opacity: 0.45; pointer-events: none; z-index: 1; }
-    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
-    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
-    .peek-left { left: -20%; }
-    .peek-right { right: -20%; }
 
     /* Overlay caption */
     .overlay-caption { position: absolute; top: 0; right: 0; color: #ddd; font-size: 9pt; line-height: 1.2; font-family: 'Space Mono', monospace; text-align: left; max-width: 38%; padding-left: 12px; }
@@ -59,7 +41,6 @@
     .overlay-details { display: block; margin-top: 4px; color: #bbb; font-size: 8pt; line-height: 1.3; }
 
     /* Card captions under tiles */
-    
     .caption { color: #777; font-family: 'Space Mono', monospace; font-size: 7pt; margin-top: 4px; line-height: 1.1; font-weight: 500; }
     .caption em { font-style: italic; }
   </style>
@@ -93,12 +74,9 @@
           if (window.__GRID_RENDERED) return;
           window.__GRID_RENDERED = true;
 
-          // ---- state ----
           let PROJECTS = [];
           let currentProject = -1;
-          let currentIndex = -1;
 
-          // ---- helpers ----
           function getMediaSrc(media) {
             if (!media) return '';
             if (typeof media === 'string') return media;
@@ -110,17 +88,14 @@
             return type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
           }
 
-          // ---- overlay rendering ----
           function renderMedia(media) {
             const overlayContent = document.getElementById('overlayContent');
             if (!overlayContent) return;
             const src = getMediaSrc(media);
             if (!src) { overlayContent.innerHTML = ''; return; }
-            if (isVideo(media)) {
-              overlayContent.innerHTML = '<video src="' + src + '" controls autoplay></video>';
-            } else {
-              overlayContent.innerHTML = '<img src="' + src + '" alt="Gallery">';
-            }
+            overlayContent.innerHTML = isVideo(media)
+              ? '<video src="' + src + '" controls autoplay></video>'
+              : '<img src="' + src + '" alt="Gallery">';
           }
 
           function updateOverlayCaption(project) {
@@ -137,9 +112,6 @@
             }
           }
 
-          // updatePeeks removed for single-image overlay
-          
-
           function openOverlayFor(projectIdx) {
             const overlay = document.getElementById('overlay');
             currentProject = projectIdx;
@@ -151,16 +123,12 @@
             overlay.classList.add('active');
           }
 
-          // move() removed for single-image overlay
-          
-
           function closeOverlay() {
             const overlay = document.getElementById('overlay');
             overlay.classList.remove('active');
             const overlayContent = document.getElementById('overlayContent');
             if (overlayContent) overlayContent.innerHTML = '';
             currentProject = -1;
-            currentIndex = -1;
           }
           window.closeOverlay = closeOverlay;
 
@@ -168,10 +136,7 @@
             if (e.key === 'Escape') closeOverlay();
           });
 
-          // ---- grid rendering ----
-          function clearGrid() {
-            while (grid.firstChild) grid.removeChild(grid.firstChild);
-          }
+          function clearGrid() { while (grid.firstChild) grid.removeChild(grid.firstChild); }
           function toArrayMaybe(val) { return Array.isArray(val) ? val : (val ? [val] : []); }
 
           function renderItems(items) {
@@ -204,10 +169,7 @@
             grid.appendChild(frag);
           }
 
-          function renderFallback(count) {
-            const items = Array.from({ length: count }, function(_, i){ return 'images/project' + (i + 1) + '.jpg'; });
-            renderItems(items);
-          }
+          function renderFallback(count) { const items = Array.from({ length: count }, function(_, i){ return 'images/project' + (i + 1) + '.jpg'; }); renderItems(items); }
 
           try {
             const res = await fetch('projects.json', { cache: 'no-store' });
@@ -219,17 +181,12 @@
             renderFallback(10);
           }
 
-          // ---- UI wiring ----
           const closeBtn = document.querySelector('.close-btn');
           if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
 
           const overlayEl = document.getElementById('overlay');
           if (overlayEl) overlayEl.addEventListener('click', function(e){ if (e.target === overlayEl) closeOverlay(); });
-
-          // nav buttons removed for single-image overlay);
-            nextBtn.addEventListener('click', function(e){ e.stopPropagation(); move(1); });
-          }
-        )();
+        })();
       </script>
     </section>
   </div>
@@ -237,12 +194,9 @@
   <div class="overlay" id="overlay">
     <div class="overlay-inner">
       <span class="close-btn">&times;</span>
-      
       <div class="overlay-content" id="overlayContent"></div>
-      
       <div class="overlay-caption">
         <span id="overlayCaption"></span>
-        <span id="overlayMore" class="more" style="display:none">More</span>
         <div id="overlayDetails" class="overlay-details"></div>
       </div>
     </div>
