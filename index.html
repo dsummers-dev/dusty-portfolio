@@ -32,6 +32,9 @@
       padding: 0 0 8px;
       margin-bottom: 26px; 
       z-index: 100; 
+      max-width: calc(10 * 130px + 9 * 8px); /* Match grid max-width */
+      margin-left: auto;
+      margin-right: auto;
     }
     
     header h1, header p { 
@@ -158,6 +161,14 @@
       .grid { 
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
         gap: 16px 6px; 
+      }
+      
+      header {
+        max-width: none; /* Remove max-width constraint on mobile */
+      }
+      
+      header {
+        max-width: none; /* Remove max-width constraint on mobile */
       }
     }
 
