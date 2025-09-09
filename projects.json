@@ -1,6 +1,6 @@
 [
    { "gallery": [
-      "images/images/FlockofDimes_TLYS_900px.jpg",
+      "images/FlockofDimes_TLYS_900px.jpg",
       "images/FlockOfDimes_TheLifeYouSave_Mockup_EU_LP_2000x1417.jpg"
     ],
     "caption": "Flock of Dimes<br><em>The Life You Save</em><br>2026",
@@ -23,9 +23,6 @@
     "details": "Creative Direction<br>Art Direction<br>Design"
   },
 
-
-
-  { "image": "images/FrankieCosmos_DifferentTalking_900px.jpg", "caption": "Frankie Cosmos<br><em>Different Talking</em><br>2025" },
   { "image": "images/TheBugClub_VeryHumanFeatures_900px.jpg", "caption": "The Bug Club<br><em>Very Human Features</em><br>2025" },
   { "image": "images/DeepSeaDiver_BillboardHeart_900px.jpg", "caption": "Deep Sea Diver<br><em>Billboard Heart</em><br>2025" },
   { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
