@@ -67,7 +67,7 @@
       gap: 24px 8px; 
     }
 
-    /* Grid Items - Only grayscale hover, no movement */
+    /* Grid Items - NO BORDER, minimal rounded corners */
     .grid-item { 
       cursor: pointer;
     }
@@ -76,8 +76,7 @@
       width: 100%; 
       aspect-ratio: 1; 
       object-fit: cover; 
-      border: 1px solid rgba(0,0,0,0.08); 
-      border-radius: 4px;
+      border-radius: 2px;
       filter: grayscale(0%); 
       transition: filter 0.3s ease; 
       display: block;
@@ -97,11 +96,12 @@
       font-weight: 500; 
     }
 
-    /* Modern Lightbox */
+    /* Lightbox - Less dark + B&W backdrop */
     .lightbox { 
       position: fixed; 
       inset: 0; 
-      background: rgba(0,0,0,0.95); 
+      background: rgba(0,0,0,0.8); 
+      backdrop-filter: grayscale(100%);
       display: none; 
       align-items: center;
       justify-content: center;
@@ -128,11 +128,11 @@
       height: auto; 
     }
 
-    /* Simple close button - no circle */
+    /* Close button above caption */
     .lightbox-close { 
       position: absolute; 
-      top: -40px; 
-      right: 0; 
+      bottom: 40px; 
+      right: -300px; 
       color: rgba(255,255,255,0.8); 
       font-size: 24px; 
       cursor: pointer; 
@@ -250,7 +250,7 @@
     <section class="grid" id="grid"></section>
   </div>
 
-  <!-- Modern Lightbox -->
+  <!-- Lightbox with B&W backdrop -->
   <div class="lightbox" id="lightbox">
     <div class="lightbox-content">
       <div class="lightbox-close" id="lightbox-close">&times;</div>
