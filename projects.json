@@ -39,6 +39,14 @@
     "details": "Creative Direction<br>Art Direction<br>Design<br><br>Photography<br>Neil Krug"
   },
 
+  { "gallery": [
+      "images/jonbenjamin-jazzdaredevilmovie-4000px_1296x.jpg",
+      "images/JonBenjamin_JazzDaredevilMovie_MockUp_LP_2000x1417_1_1296x.jpg"
+    ],
+    "caption": "Jon Benjamin<br><em>The Jazz Daredevil</em><br>2025",
+    "details": "Creative Direction<br>Art Direction<br>Design<br>3D Rendering<br>Illustration by<br>Jon Stich"
+  },
+
   { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
   { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
   { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
