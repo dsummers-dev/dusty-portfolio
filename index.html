@@ -42,22 +42,12 @@
     .nav-next { right: -48px; }
     @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
     .nav-btn:hover { color: #fff; }
-    .nav-prev { left: -48px; }
-    .nav-next { right: -48px; }
-    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
-    .nav-btn:hover { color: #fff; }
-    .nav-prev { left: -48px; }
-    .nav-next { right: -48px; }
-    @media (max-width: 640px) { .nav-prev { left: -36px; } .nav-next { right: -36px; } }
-    .nav-btn:hover { color: #fff; }
     .nav-prev { left: -36px; }
     .nav-next { right: -36px; }
     @media (max-width: 640px) { .nav-prev { left: -28px; } .nav-next { right: -28px; } }
 
     /* Peek previews */
     .peek { position: absolute; top: 50%; transform: translateY(-50%); width: 16%; max-height: 70vh; opacity: 0.45; pointer-events: none; z-index: 1; }
-    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
-    .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
     .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
     .peek img { max-width: 100%; max-height: 100%; display: block; border: 1px solid rgba(255,255,255,0.2); }
     .peek-left { left: -20%; }
@@ -70,8 +60,6 @@
 
     /* Card captions under tiles */
     
-
-
     .caption { color: #777; font-family: 'Space Mono', monospace; font-size: 7pt; margin-top: 4px; line-height: 1.1; font-weight: 500; }
     .caption em { font-style: italic; }
   </style>
@@ -149,46 +137,22 @@
             }
           }
 
-          function updatePeeks(project) {
-            const left = document.getElementById('peekLeft');
-            const right = document.getElementById('peekRight');
-            if (!left || !right) return;
-            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
-            if (gallery.length <= 1) { left.innerHTML = ''; right.innerHTML = ''; return; }
-            const prevIdx = (currentIndex - 1 + gallery.length) % gallery.length;
-            const nextIdx = (currentIndex + 1) % gallery.length;
-            const prevMedia = gallery[prevIdx];
-            const nextMedia = gallery[nextIdx];
-            left.innerHTML = isVideo(prevMedia) ? '' : '<img src="' + getMediaSrc(prevMedia) + '" alt="Prev">';
-            right.innerHTML = isVideo(nextMedia) ? '' : '<img src="' + getMediaSrc(nextMedia) + '" alt="Next">';
-          }
+          // updatePeeks removed for single-image overlay
+          
 
-          function openOverlayFor(projectIdx, mediaIdx) {
+          function openOverlayFor(projectIdx) {
             const overlay = document.getElementById('overlay');
             currentProject = projectIdx;
-            currentIndex = mediaIdx || 0;
             const project = PROJECTS[projectIdx];
             const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
-            renderMedia(gallery[currentIndex]);
+            const displayMedia = gallery.length > 1 ? gallery[1] : gallery[0];
+            renderMedia(displayMedia);
             updateOverlayCaption(project);
-            updatePeeks(project);
-
-            const prevBtn = document.querySelector('.nav-prev');
-            const nextBtn = document.querySelector('.nav-next');
-            if (gallery.length > 1) { prevBtn.style.display = 'block'; nextBtn.style.display = 'block'; }
-            else { prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
             overlay.classList.add('active');
           }
 
-          function move(delta) {
-            if (currentProject < 0) return;
-            const project = PROJECTS[currentProject];
-            const gallery = project.gallery && project.gallery.length ? project.gallery : [project.image || project.src];
-            if (!gallery.length) return;
-            currentIndex = (currentIndex + delta + gallery.length) % gallery.length;
-            renderMedia(gallery[currentIndex]);
-            updatePeeks(project);
-          }
+          // move() removed for single-image overlay
+          
 
           function closeOverlay() {
             const overlay = document.getElementById('overlay');
@@ -227,7 +191,7 @@
               img.src = coverSrc;
               if (caption) { const tmp = document.createElement('div'); tmp.innerHTML = caption; img.alt = (tmp.textContent || '').trim() || ('Project ' + (idx + 1)); }
               else { img.alt = 'Project ' + (idx + 1); }
-              img.addEventListener('click', function(){ openOverlayFor(idx, 0); });
+              img.addEventListener('click', function(){ openOverlayFor(idx); });
               item.appendChild(img);
 
               const cap = document.createElement('div');
@@ -262,10 +226,7 @@
           const overlayEl = document.getElementById('overlay');
           if (overlayEl) overlayEl.addEventListener('click', function(e){ if (e.target === overlayEl) closeOverlay(); });
 
-          const prevBtn = document.querySelector('.nav-prev');
-          const nextBtn = document.querySelector('.nav-next');
-          if (prevBtn && nextBtn) {
-            prevBtn.addEventListener('click', function(e){ e.stopPropagation(); move(-1); });
+          // nav buttons removed for single-image overlay);
             nextBtn.addEventListener('click', function(e){ e.stopPropagation(); move(1); });
           }
         })();
@@ -276,11 +237,9 @@
   <div class="overlay" id="overlay">
     <div class="overlay-inner">
       <span class="close-btn">&times;</span>
-      <button class="nav-btn nav-prev" aria-label="Previous" title="Previous">&#x2039;</button>
-      <button class="nav-btn nav-next" aria-label="Next" title="Next">&#x203A;</button>
+      
       <div class="overlay-content" id="overlayContent"></div>
-      <div id="peekLeft" class="peek peek-left"></div>
-      <div id="peekRight" class="peek peek-right"></div>
+      
       <div class="overlay-caption">
         <span id="overlayCaption"></span>
         <span id="overlayMore" class="more" style="display:none">More</span>
