@@ -57,5 +57,8 @@
 
 
   { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
- 
+  { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
+  { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
+  { "image": "images/project9.jpg",  "caption": "Band 9<br><em>Album 9</em><br>2009" },
+  { "image": "images/project10.jpg", "caption": "Band 10<br><em>Album 10</em><br>2010" }
 ]
