@@ -47,6 +47,15 @@
     "details": "Creative Direction<br>Art Direction<br>Design<br>3D Rendering<br><br>Illustration by<br>Jon Stich"
   },
 
+ { "gallery": [
+      "images/loma-hwilwab-4500px_1024x1024.jpg",
+      "images/Loma_HWILWAB_MockUp_LP_US_2000x1417_ec90ab9c-f3d7-4702-bae4-e70678207f89_1296x.jpg"
+    ],
+    "caption": "Loma<br><em>How Will I Live Without a Body?</em><br>2025",
+    "details": "Art Direction<br>Design<br><br><br>Illustrations by<br>Lisa Cline"
+  },
+
+
   { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
   { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
   { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
