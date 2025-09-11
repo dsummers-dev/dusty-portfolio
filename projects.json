@@ -63,7 +63,14 @@
     "details": "Creatrive Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Willem Hampson"
   },
 
-  { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
+  { "gallery": [
+      "images/manman-carrotonstring-4000px_1296x.jpg",
+      "images/ManMan_CarrotOnString_MockUP_LPv1_2000x1417_f51f6809-d68e-4989-8009-9e7ed3fbaf77_1296x.jpg"
+    ],
+    "caption": "Man Man<br><em>Carrot On String</em><br>2024",
+    "details": "Creatrive Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Eric Thompson"
+  },
+
   { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
   { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
   { "image": "images/project9.jpg",  "caption": "Band 8<br><em>Album 9</em><br>2008" }
