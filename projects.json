@@ -71,6 +71,14 @@
     "details": "Creatrive Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Eric Thompson"
   },
 
+  { "gallery": [
+      "images/ironandwine-lightverse-4000px_1296x.jpg",
+      "images/IronandWine_LightVerse_MockUp_LP_USLoser_2000x1417_cae3f57d-fbac-4df4-b67b-a97506fb588a_1296x.jpg"
+    ],
+    "caption": "Iron and Wine<br><em>Light Verse</em><br>2023",
+    "details": "Art Direction<br>Design<br><br>Illustrations by<br>Sam Beam"
+  },
+
   { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
   { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
   { "image": "images/project9.jpg",  "caption": "Band 8<br><em>Album 9</em><br>2008" }
