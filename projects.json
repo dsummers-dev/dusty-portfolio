@@ -51,8 +51,16 @@
       "images/loma-hwilwab-4500px_1024x1024.jpg",
       "images/Loma_HWILWAB_MockUp_LP_US_2000x1417_ec90ab9c-f3d7-4702-bae4-e70678207f89_1296x.jpg"
     ],
-    "caption": "Loma<br><em>How Will I Live Without a Body?</em><br>2025",
+    "caption": "Loma<br><em>How Will I Live Without a Body?</em><br>2024",
     "details": "Art Direction<br>Design<br><br>Illustrations by<br>Lisa Cline"
+  },
+
+   { "gallery": [
+      "images/thebugclub_otiiwots-4000px_1296x.jpg",
+      "images/TheBugClub_OTIIWOTS_MockUp_LP_USLoser_2000x1417_46a57803-1487-4a7e-8903-a58f8643ca48_1024x1024.jpg"
+    ],
+    "caption": "The Bug Club<br><em>On The Inner Workings…</em><br>2024",
+    "details": "Creatrive Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Willem Hampson"
   },
 
   { "image": "images/project6.jpg",  "caption": "Band 6<br><em>Album 6</em><br>2006" },
