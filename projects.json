@@ -60,7 +60,7 @@
       "images/TheBugClub_OTIIWOTS_MockUp_LP_USLoser_2000x1417_46a57803-1487-4a7e-8903-a58f8643ca48_1024x1024.jpg"
     ],
     "caption": "The Bug Club<br><em>On The Inner Workings…</em><br>2024",
-    "details": "Creatrive Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Willem Hampson"
+    "details": "Creative Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Willem Hampson"
   },
 
   { "gallery": [
@@ -76,10 +76,34 @@
       "images/ManMan_CarrotOnString_MockUP_LPv1_2000x1417_f51f6809-d68e-4989-8009-9e7ed3fbaf77_1296x.jpg"
     ],
     "caption": "Man Man<br><em>Carrot On String</em><br>2024",
-    "details": "Creatrive Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Eric Thompson"
+    "details": "Creative Direction<br>Art Direction<br>Design<br><br>Illustrations by<br>Eric Thompson"
   },
 
-  { "image": "images/project7.jpg",  "caption": "Band 7<br><em>Album 7</em><br>2007" },
-  { "image": "images/project8.jpg",  "caption": "Band 8<br><em>Album 8</em><br>2008" },
+  { "gallery": [
+      "images/girlandgirl-calladcotor-3500px_1024x1024.jpg",
+      "images/GirlandGirl_CallADoctor_LP_2000x1417_none_1296x.jpg"
+    ],
+    "caption": "Girl and Girl<br><em>Call A Doctor</em><br>2024",
+    "details": "Art Direction<br>Design"
+  },
+
+  { "gallery": [
+      "images/danboeckner-boeckner-3700px_1296x.jpg",
+      "images/Boeckner_Boeckner_MockUp_LP_USLoser_2000x1417_607a4897-5ca9-4265-bc6a-356aeb154e9d_1296x.png"
+    ],
+    "caption": "Boeckner<br><em>Boeckner</em><br>2024",
+    "details": "Creative Direction<br>Art Direction<br>Design<br><br>Photography by<br>Alison Green"
+  },
+
+  { "gallery": [
+      "images/pissedjeans-halfdivorced-3500px_1024x1024.jpg",
+      "images/PissedJeans_HalfDivorced_MockUp_USLoser_2000x1417_e88ca283-f02f-4148-98cc-7d31f0db1a45_1296x.jpg"
+    ],
+    "caption": "Pissed Jeans<br><em>Hlaf Divorced</em><br>2024",
+    "details": "Art Direction<br>Design<br><br>Illustrations by<br>Kento Iida"
+  },
+
+  { "image": "images/ironandwine-wcsf-3000px_1024x1024.jpg",  "caption": "Iron and Wine<br><em>Who Could See Forever</em><br>2023" },
+  { "image": "images/debbyfriday-goodluck-3600px_1296x.jpg",  "caption": "Debby Friday<br><em>Good Luck</em><br>2023" },
   { "image": "images/project9.jpg",  "caption": "Band 8<br><em>Album 9</em><br>2008" }
 ]
