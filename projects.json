@@ -114,6 +114,14 @@
     ],
     "caption": "Sub Pop Singles Club<br><em>Volume 8</em><br>2023",
     "details": "Creative Direction<br>Art Direction<br>Design<br>3d Rendering<br><br>Illustrations by<br>Old Sweaty"
-  }
+  },
+
+  { "image": "images/weyesblood-aitdha-2400px_1296x.jpg",  "caption": "Weyes Blood<br><em>And In the Darkness, Hearts Aglow</em><br>2022" },
+  
+  { "image": "images/frankiecosmos-innerworldpeace-3000_1296x.jpg",  "caption": "Frankie Cosmos<br><em>Inner World Peace</em><br>2022" },
+  
+  { "image": "images/bretmckenzie-songswithoutjokes-3000px-1_1296x.jpg",  "caption": "Bret McKenzie<br><em>Songs Without Jokes</em><br>2022" },
+  
+  { "image": "images/guerillatoss-famouslyalive-3600px_1296x.jpg",  "caption": "Guerilla Toss<br><em>Famously Alive</em><br>2022" }
 
 ]
